@@ -116,7 +116,7 @@
     <div class="sub" id="subline">加载中…</div>
   </header>
   <div style="text-align:center;font-size:11px;color:var(--dim);opacity:.7;margin:-8px 0 12px">
-    164 种吃法 · 12 大类 · 支持场景筛选 · 公网版</div>
+    <span id="verInfo">164 种吃法 · 公网版</span></div>
 
   <div class="stage" id="stage">
     <div class="burst" id="burst"></div>
@@ -137,7 +137,9 @@
   </div>
 
   <div class="card" style="margin-top:14px">
-    <h2>👥 场景（几个人）<span class="cnt" id="sceneCnt"></span></h2>
+    <h2>📍 地点 <span class="cnt" id="locCnt"></span></h2>
+    <div class="chips" id="locChips"></div>
+    <h2 style="margin-top:16px">👥 场景（几个人）<span class="cnt" id="sceneCnt"></span></h2>
     <div class="chips" id="sceneChips"></div>
     <h2 style="margin-top:16px">🍽️ 餐次 <span class="cnt" id="mealCnt"></span></h2>
     <div class="chips" id="mealChips"></div>
@@ -165,7 +167,8 @@
 <script>
 'use strict';
 (function () {
-  var TYPES = ['吉大日新楼', '早餐', '主食', '面食', '快餐', '家常炒菜', '火锅', '烤肉烧烤', '聚餐硬菜', '东北特色', '小吃夜宵', '饮品甜品'];
+  var TYPES = ['早餐', '主食', '面食', '快餐', '家常炒菜', '火锅', '烤肉烧烤', '聚餐硬菜', '东北特色', '小吃夜宵', '饮品甜品'];
+  var LOCS = ['通用', '日新楼', '吉大周边'];
   var MEALS = ['早餐', '午餐', '晚餐', '夜宵'];
   var PRICES = ['便宜', '中等', '小贵'];
   var SCENES = ['单人', '两人', '多人'];
@@ -287,28 +290,36 @@
     { n: '水果捞', t: '饮品甜品', m: ['午餐', '晚餐'], p: '中等', s: ['单人', '两人'], c: '解腻' },
     { n: '甜品店（双人份）', t: '饮品甜品', m: ['晚餐'], p: '中等', s: ['两人'], c: '约会/闺蜜局' },
 
-    // ===== 吉林大学 日新楼（1F/2F/3F）=====
-    { n: '米村拌饭', t: '吉大日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['单人', '两人'], c: '日新楼3F · 石锅拌饭，锅巴香' },
-    { n: '新派旋转火锅', t: '吉大日新楼', m: ['午餐', '晚餐', '夜宵'], p: '中等', s: ['单人', '两人'], c: '日新楼3F · 一人食旋转锅' },
-    { n: '赖胖子肉蟹煲', t: '吉大日新楼', m: ['晚餐'], p: '小贵', s: ['两人', '多人'], c: '日新楼3F · 适合小聚' },
-    { n: 'WOWO 鸡公煲', t: '吉大日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['单人', '两人', '多人'], c: '日新楼3F · 记得配米饭' },
-    { n: '胖叔家肠粉', t: '吉大日新楼', m: ['早餐', '午餐', '晚餐'], p: '便宜', s: ['单人'], c: '日新楼3F · 广式肠粉' },
-    { n: '美食妹肉酱手拍粉', t: '吉大日新楼', m: ['午餐', '晚餐'], p: '便宜', s: ['单人'], c: '日新楼 · 手拍粉劲道' },
-    { n: '阿敏煲江南私房菜', t: '吉大日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['两人', '多人'], c: '日新楼3F · 江南口味' },
-    { n: '汉堡王', t: '吉大日新楼', m: ['午餐', '晚餐', '夜宵'], p: '中等', s: ['单人', '两人'], c: '日新楼2F · 快餐最稳' },
-    { n: '幸运咖', t: '吉大日新楼', m: ['早餐', '午餐', '晚餐'], p: '便宜', s: ['单人', '两人'], c: '日新楼1F · 平价咖啡' },
+    // ===== 吉大日新楼 · 楼内（1F / 2F / 3F / B1）=====
+    { n: '米村拌饭', t: '主食', loc: '日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['单人', '两人'], c: '日新楼3F · 石锅拌饭，锅巴香' },
+    { n: '小明同学自选中餐', t: '主食', loc: '日新楼', m: ['午餐', '晚餐'], p: '便宜', s: ['单人'], c: '日新楼2F · 自选称重' },
+    { n: '新派旋转火锅', t: '火锅', loc: '日新楼', m: ['午餐', '晚餐', '夜宵'], p: '中等', s: ['单人', '两人'], c: '日新楼3F · 一人食旋转锅' },
+    { n: '赖胖子肉蟹煲', t: '聚餐硬菜', loc: '日新楼', m: ['晚餐'], p: '小贵', s: ['两人', '多人'], c: '日新楼3F · 适合小聚' },
+    { n: 'WOWO 鸡公煲', t: '聚餐硬菜', loc: '日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['单人', '两人', '多人'], c: '日新楼3F · 记得配米饭' },
+    { n: '阿敏煲江南私房菜', t: '家常炒菜', loc: '日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['两人', '多人'], c: '日新楼3F · 江南口味' },
+    { n: '胖叔家肠粉', t: '小吃夜宵', loc: '日新楼', m: ['早餐', '午餐', '晚餐'], p: '便宜', s: ['单人'], c: '日新楼3F · 广式肠粉' },
+    { n: '美食妹肉酱手拍粉', t: '面食', loc: '日新楼', m: ['午餐', '晚餐'], p: '便宜', s: ['单人'], c: '日新楼 · 手拍粉劲道' },
+    { n: '汉堡王', t: '快餐', loc: '日新楼', m: ['午餐', '晚餐', '夜宵'], p: '中等', s: ['单人', '两人'], c: '日新楼2F · 快餐最稳' },
+    { n: '幸运咖', t: '饮品甜品', loc: '日新楼', m: ['早餐', '午餐', '晚餐'], p: '便宜', s: ['单人', '两人'], c: '日新楼1F · 平价咖啡' },
+    { n: '沪上阿姨鲜果茶', t: '饮品甜品', loc: '日新楼', m: ['午餐', '晚餐'], p: '便宜', s: ['单人', '两人'], c: '日新楼1F(1D25) · 鲜果茶' },
+    { n: '霸王茶姬', t: '饮品甜品', loc: '日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['单人', '两人'], c: '日新楼1F(1A05) · 原叶鲜奶茶' },
+    { n: '红果果鲜切水果', t: '饮品甜品', loc: '日新楼', m: ['午餐', '晚餐'], p: '便宜', s: ['单人', '两人'], c: '日新楼1F(1B12) · 鲜切水果' },
+    { n: '甜啦啦鲜果茶', t: '饮品甜品', loc: '日新楼', m: ['午餐', '晚餐'], p: '便宜', s: ['单人'], c: '日新楼负1F · 便宜解渴' },
 
     // ===== 吉大南校周边 =====
-    { n: '茶百道', t: '吉大日新楼', m: ['午餐', '晚餐'], p: '便宜', s: ['单人', '两人'], c: '吉大南校店 · 奶茶' },
-    { n: '塔斯汀中国汉堡', t: '吉大日新楼', m: ['午餐', '晚餐', '夜宵'], p: '中等', s: ['单人', '两人'], c: '吉大南校 · 中式汉堡' },
-    { n: '黄记玉米汁', t: '吉大日新楼', m: ['早餐', '午餐'], p: '便宜', s: ['单人'], c: '吉大前卫南区 · 热乎玉米汁' },
-    { n: '临榆炸鸡腿', t: '吉大日新楼', m: ['午餐', '晚餐', '夜宵'], p: '便宜', s: ['单人', '两人'], c: '吉大前卫南区 · 炸鸡腿' },
-    { n: '食尚酱骨', t: '吉大日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['两人', '多人'], c: '硅谷大街 · 酱骨头' },
-    { n: '米源道拌饭', t: '吉大日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['单人'], c: '吉大店 · 拌饭实惠' },
-    { n: '釜山美食', t: '吉大日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['单人', '两人'], c: '致远街 · 韩式料理' },
-    { n: '火焰山新疆美食', t: '吉大日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['两人', '多人'], c: '致远街 · 大盘鸡 + 烤串' },
-    { n: '秦川人家陕西美食', t: '吉大日新楼', m: ['午餐', '晚餐'], p: '便宜', s: ['单人'], c: '力旺广场 · 肉夹馍 + 油泼面' },
-    { n: '町门烤牛肉丼饭', t: '吉大日新楼', m: ['午餐', '晚餐'], p: '中等', s: ['单人'], c: '力旺广场4F · 牛肉丼饭' },
+    { n: '库迪咖啡', t: '饮品甜品', loc: '吉大周边', m: ['早餐', '午餐'], p: '便宜', s: ['单人', '两人'], c: '日新楼南苑对面 · 咖啡' },
+    { n: '易阿姨奶茶', t: '饮品甜品', loc: '吉大周边', m: ['午餐', '晚餐'], p: '便宜', s: ['单人'], c: '日新楼南苑对面 · 奶茶' },
+    { n: '古早集沙拉轻食', t: '主食', loc: '吉大周边', m: ['午餐', '晚餐'], p: '中等', s: ['单人'], c: '图强路 · 沙拉轻食' },
+    { n: '茶百道', t: '饮品甜品', loc: '吉大周边', m: ['午餐', '晚餐'], p: '便宜', s: ['单人', '两人'], c: '吉大南校店 · 奶茶' },
+    { n: '塔斯汀中国汉堡', t: '快餐', loc: '吉大周边', m: ['午餐', '晚餐', '夜宵'], p: '中等', s: ['单人', '两人'], c: '吉大南校 · 中式汉堡' },
+    { n: '黄记玉米汁', t: '饮品甜品', loc: '吉大周边', m: ['早餐', '午餐'], p: '便宜', s: ['单人'], c: '吉大前卫南区 · 热乎玉米汁' },
+    { n: '临榆炸鸡腿', t: '小吃夜宵', loc: '吉大周边', m: ['午餐', '晚餐', '夜宵'], p: '便宜', s: ['单人', '两人'], c: '吉大前卫南区 · 炸鸡腿' },
+    { n: '食尚酱骨', t: '东北特色', loc: '吉大周边', m: ['午餐', '晚餐'], p: '中等', s: ['两人', '多人'], c: '硅谷大街 · 酱骨头' },
+    { n: '米源道拌饭', t: '主食', loc: '吉大周边', m: ['午餐', '晚餐'], p: '中等', s: ['单人'], c: '吉大店 · 拌饭实惠' },
+    { n: '釜山美食', t: '主食', loc: '吉大周边', m: ['午餐', '晚餐'], p: '中等', s: ['单人', '两人'], c: '致远街 · 韩式料理' },
+    { n: '火焰山新疆美食', t: '聚餐硬菜', loc: '吉大周边', m: ['午餐', '晚餐'], p: '中等', s: ['两人', '多人'], c: '致远街 · 大盘鸡 + 烤串' },
+    { n: '秦川人家陕西美食', t: '面食', loc: '吉大周边', m: ['午餐', '晚餐'], p: '便宜', s: ['单人'], c: '力旺广场 · 肉夹馍 + 油泼面' },
+    { n: '町门烤牛肉丼饭', t: '主食', loc: '吉大周边', m: ['午餐', '晚餐'], p: '中等', s: ['单人'], c: '力旺广场4F · 牛肉丼饭' },
 
     // ===== 日新楼带火的品类（补充到通用池）=====
     { n: '肉蟹煲', t: '聚餐硬菜', m: ['晚餐'], p: '小贵', s: ['两人', '多人'], c: '汤汁拌饭一绝' },
@@ -382,7 +393,7 @@
   var SAVE = 'eat-what-v3';
   var el = function (id) { return document.getElementById(id); };
   var state = {
-    scenes: SCENES.slice(), meals: MEALS.slice(), types: TYPES.slice(), prices: PRICES.slice(),
+    scenes: SCENES.slice(), meals: MEALS.slice(), types: TYPES.slice(), prices: PRICES.slice(), locs: LOCS.slice(),
     hist: [], noRepeat: true, sfx: true, rolling: false, current: null
   };
 
@@ -408,6 +419,8 @@
       if (state.prices.indexOf(f.p) < 0) return false;
       if (!f.m.some(function (m) { return state.meals.indexOf(m) >= 0; })) return false;
       if (!f.s.some(function (s) { return state.scenes.indexOf(s) >= 0; })) return false;
+      var loc = f.loc || '通用';
+      if (state.locs.indexOf(loc) < 0) return false;
       return true;
     });
   }
@@ -440,6 +453,7 @@
     });
   }
   function buildChips() {
+    mkChips(el('locChips'), LOCS, 'loc', state.locs, 'scene');
     mkChips(el('sceneChips'), SCENES, 'scene', state.scenes, 'scene');
     mkChips(el('mealChips'), MEALS, 'meal', state.meals);
     mkChips(el('typeChips'), TYPES, 'type', state.types);
@@ -456,8 +470,11 @@
       el('priceChips').appendChild(b);
     });
     el('totalNum').textContent = FOODS.length;
+    var vi = el('verInfo');
+    if (vi) vi.textContent = FOODS.length + ' 种吃法 · ' + TYPES.length + ' 大类 · 地点/场景/餐次 多维筛选 · 公网版';
   }
   function syncChips() {
+    document.querySelectorAll('#locChips .chip').forEach(function (b) { b.classList.toggle('on', state.locs.indexOf(b.dataset.loc) >= 0); });
     document.querySelectorAll('#sceneChips .chip').forEach(function (b) { b.classList.toggle('on', state.scenes.indexOf(b.dataset.scene) >= 0); });
     document.querySelectorAll('#mealChips .chip').forEach(function (b) { b.classList.toggle('on', state.meals.indexOf(b.dataset.meal) >= 0); });
     document.querySelectorAll('#typeChips .chip').forEach(function (b) { b.classList.toggle('on', state.types.indexOf(b.dataset.type) >= 0); });
@@ -468,6 +485,7 @@
   function refresh() {
     syncChips();
     var pool = buildPool();
+    el('locCnt').textContent = state.locs.join(' ');
     el('sceneCnt').textContent = state.scenes.join(' ');
     el('mealCnt').textContent = state.meals.join(' ');
     el('typeCnt').textContent = state.types.join(' ');
@@ -554,7 +572,7 @@
   function save() {
     try {
       localStorage.setItem(SAVE, JSON.stringify({
-        scenes: state.scenes, meals: state.meals, types: state.types, prices: state.prices,
+        scenes: state.scenes, meals: state.meals, types: state.types, prices: state.prices, locs: state.locs,
         hist: state.hist.slice(0, 40), noRepeat: state.noRepeat, sfx: state.sfx
       }));
     } catch (e) {}
@@ -568,6 +586,7 @@
       var s2 = fit(d.meals, MEALS); if (s2 && s2.length) state.meals = s2;
       var s3 = fit(d.types, TYPES); if (s3 && s3.length) state.types = s3;
       var s4 = fit(d.prices, PRICES); if (s4 && s4.length) state.prices = s4;
+      var s5 = fit(d.locs, LOCS); if (s5 && s5.length) state.locs = s5;
       if (Array.isArray(d.hist)) state.hist = d.hist;
       state.noRepeat = d.noRepeat !== false;
       state.sfx = d.sfx !== false;
