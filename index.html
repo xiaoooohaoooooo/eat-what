@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>今天吃什么 v2.2 · 随机决定器</title>
+<title>今天吃什么 v2.3 · 随机决定器</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -176,7 +176,7 @@
 <div class="bg"></div><div class="grid"></div>
 <div class="wrap">
   <header>
-    <div class="brand">今天吃什么 · v2.2</div>
+    <div class="brand">今天吃什么 · v2.3</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -207,7 +207,8 @@
   <div class="acts">
     <button class="hot" id="quick">🏠 楼下随便吃点</button>
     <button id="shot">📸 存成图片</button>
-    <button class="wide" id="partyBtn">🎡 宿舍模式（一次给全员抽不重样的）</button>
+    <button id="tagBtn">⭐ 改这个的标签</button>
+    <button id="partyBtn">🎡 宿舍模式</button>
   </div>
 
   <div class="card" style="margin-top:14px">
@@ -304,6 +305,8 @@
       <button id="mAdd">➕ 加进池子</button>
     </div>
     <div class="minelist" id="mineList"></div>
+    <h2 style="margin-top:16px">⭐ 我改过的标签 <span class="cnt">内置店也能改，点「还原」恢复</span></h2>
+    <div class="minelist" id="tagList"></div>
     <div class="hint" id="mineHint"></div>
   </div>
 
@@ -694,21 +697,47 @@
   var SAVE = 'eat-what-v3';
   var MINE_KEY = 'eat-what-mine-v1';
   var STAT_KEY = 'eat-what-stat-v1';
+  var TAGOV_KEY = 'eat-what-tagov-v1';
   var CURFEW_H = 21, CURFEW_M = 30;   // 封寝时间
   var el = function (id) { return document.getElementById(id); };
   var custom = [];    // 自己加的店
   var stats = {};     // { 店名: { c: 抽到次数, e: 吃过次数, last: 时间戳 } }
+  var tagOv = {};     // { 店名: '自定义标签' } —— 覆盖任意店（含内置）的口碑标签，'' 表示抹掉
   var state = {
     scenes: SCENES.slice(), meals: MEALS.slice(), types: TYPES.slice(), prices: PRICES.slice(), locs: LOCS.slice(),
     hist: [], noRepeat: true, sfx: true, rolling: false, current: null
   };
   function getDB() { return FOODS.concat(custom); }
-  // 取门店附加信息：内置店查 SHOPMETA，自己加的店读它自己身上的字段
+  // 取门店附加信息：内置店查 SHOPMETA，自己加的店读它自己身上的字段，
+  // 最后统一套用本机自定义的标签覆盖（对内置店、自定义店都生效）
   function metaOf(f) {
-    var m = SHOPMETA[f.n];
-    if (m) return m;
-    if (f.tag || f.d || f.qs) return { tag: f.tag || '', d: f.d || 0, qs: f.qs || 0 };
-    return null;
+    var base = SHOPMETA[f.n];
+    var m = base
+      ? { d: base.d || 0, qs: base.qs || 0, tag: base.tag || '' }
+      : { d: f.d || 0, qs: f.qs || 0, tag: f.tag || '' };
+    if (Object.prototype.hasOwnProperty.call(tagOv, f.n)) m.tag = tagOv[f.n] || '';
+    if (!m.tag && !m.d && !m.qs) return null;
+    return m;
+  }
+  function saveTagOv() { try { localStorage.setItem(TAGOV_KEY, JSON.stringify(tagOv)); } catch (e) {} }
+  function loadTagOv() {
+    try {
+      var d = JSON.parse(localStorage.getItem(TAGOV_KEY) || '{}');
+      if (d && typeof d === 'object' && !Array.isArray(d)) tagOv = d; else tagOv = {};
+    } catch (e) { tagOv = {}; }
+  }
+  // 改任意一家店的标签；v 传 null 表示取消；传 '' 表示抹掉标签
+  function editTag(name, suggest) {
+    var cur = Object.prototype.hasOwnProperty.call(tagOv, name) ? (tagOv[name] || '')
+      : ((SHOPMETA[name] && SHOPMETA[name].tag) || suggest || '');
+    var v = prompt('给「' + name + '」写口碑标签：\n（留空 = 不要标签；点取消 = 不改）', cur);
+    if (v === null) return false;
+    v = v.trim().slice(0, 16);
+    var base = (SHOPMETA[name] && SHOPMETA[name].tag) || '';
+    if (v === base) delete tagOv[name]; else tagOv[name] = v;
+    saveTagOv(); renderTagList(); renderStats();
+    if (state.current && state.current.n === name) renderMeta(state.current);
+    return true;
   }
   function esc(s) {
     return String(s).replace(/[&<>"]/g, function (c) {
@@ -1051,7 +1080,7 @@
     g.fillText('今 天 吃 什 么', W / 2, 130);
     g.fillStyle = 'rgba(192,160,138,.9)';
     g.font = '22px ' + F;
-    g.fillText('随机决定器 · v2.2', W / 2, 170);
+    g.fillText('随机决定器 · v2.3', W / 2, 170);
     // 主菜名
     g.fillStyle = '#fff';
     var size = 74;
@@ -1175,7 +1204,8 @@
       custom.forEach(function (f, i) {
         var d = document.createElement('div');
         d.className = 'mn';
-        var tag = (f.tag || '').trim();
+        var mm = metaOf(f);
+        var tag = mm && mm.tag ? mm.tag : '';
         d.innerHTML = '<span class="nm">' + esc(f.n) + '</span>' +
           '<span style="font-size:10.5px;color:#c0a08a;flex:none">' + esc(f.loc || '通用') + '</span>' +
           (tag
@@ -1187,15 +1217,16 @@
       });
       box.querySelectorAll('.del[data-tag]').forEach(function (b) {
         b.onclick = function () {
-          var i = parseInt(this.dataset.tag, 10);
-          var cur = custom[i].tag || '';
-          var v = prompt('给「' + custom[i].n + '」写个口碑标签（留空则删除）：', cur);
+          var f = custom[parseInt(this.dataset.tag, 10)];
+          // 自定义店直接改自己身上的 tag 字段
+          var cur = f.tag || '';
+          var v = prompt('给「' + f.n + '」写个口碑标签（留空则删除）：', cur);
           if (v === null) return;
-          custom[i].tag = v.trim().slice(0, 16);
+          f.tag = v.trim().slice(0, 16);
           saveMine(); renderMine(); renderStats();
-          if (state.current && state.current.n === custom[i].n) renderMeta(state.current);
+          if (state.current && state.current.n === f.n) renderMeta(state.current);
           sfxSoft();
-          toast(custom[i].tag ? ('⭐ 标签已改：' + custom[i].tag) : '标签已清空');
+          toast(f.tag ? ('⭐ 标签已改：' + f.tag) : '标签已清空');
         };
       });
       box.querySelectorAll('.del[data-i]').forEach(function (b) {
@@ -1209,8 +1240,40 @@
     var hint = el('mineHint');
     if (hint) {
       hint.textContent = '现在池子里 ' + getDB().length + ' 种（自带 ' + FOODS.length +
-        ' + 你自己加的 ' + custom.length + '）。点「标」可以随时改口碑标签；数据只存在你这台设备上。';
+        ' + 你自己加的 ' + custom.length + '）。数据只存在你这台设备上。';
     }
+  }
+
+  // 改过标签的店（含内置店）统一列在这里，可一键还原
+  function renderTagList() {
+    var box = el('tagList'); if (!box) return;
+    var keys = Object.keys(tagOv);
+    box.innerHTML = '';
+    if (!keys.length) {
+      box.innerHTML = '<div class="empty">还没改过任何店的标签～<br>' +
+        '<span style="font-size:11px;opacity:.7">抽一个，然后点「⭐ 改这个的标签」</span></div>';
+      return;
+    }
+    keys.forEach(function (k) {
+      var d = document.createElement('div');
+      d.className = 'mn';
+      var base = (SHOPMETA[k] && SHOPMETA[k].tag) || '';
+      d.innerHTML = '<span class="nm">' + esc(k) + '</span>' +
+        '<span style="font-size:10.5px;color:rgba(192,160,138,.55);flex:none;text-decoration:line-through">' +
+        (base ? esc(base) : '无') + '</span>' +
+        '<span class="badge" style="flex:none">⭐ ' + (tagOv[k] ? esc(tagOv[k]) : '（已抹掉）') + '</span>' +
+        '<button class="del" data-undo="' + esc(k) + '" style="background:rgba(255,255,255,.12);color:#c0a08a">还原</button>';
+      box.appendChild(d);
+    });
+    box.querySelectorAll('.del[data-undo]').forEach(function (b) {
+      b.onclick = function () {
+        var k = this.dataset.undo;
+        delete tagOv[k];
+        saveTagOv(); renderTagList();
+        if (state.current && state.current.n === k) renderMeta(state.current);
+        sfxSoft(); toast('已还原「' + k + '」的标签');
+      };
+    });
   }
 
   function findHist(n) {
@@ -1324,6 +1387,15 @@
     el('partyCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
     setTimeout(partyRoll, 320);
   };
+  el('tagBtn').onclick = function () {
+    if (!state.current) { toast('先抽一个，再给它写标签'); return; }
+    ensureAudio();
+    if (editTag(state.current.n, '')) {
+      sfxSoft();
+      var m = metaOf(state.current);
+      toast(m && m.tag ? ('⭐ 标签已改：' + m.tag) : ('已抹掉「' + state.current.n + '」的标签'));
+    }
+  };
   el('partyGo').onclick = function () { ensureAudio(); partyRoll(); };
   el('mAdd').onclick = function () { ensureAudio(); addShop(); };
   el('mName').addEventListener('keydown', function (e) {
@@ -1344,8 +1416,8 @@
     window.addEventListener(ev, function once() { ensureAudio(); if (ac && ac.state === 'suspended') ac.resume(); }, { once: true });
   });
 
-  loadMine(); loadStat(); load();
-  buildMineForm(); buildChips(); refresh(); renderHist(); renderMine(); renderStats();
+  loadMine(); loadStat(); loadTagOv(); load();
+  buildMineForm(); buildChips(); refresh(); renderHist(); renderMine(); renderTagList(); renderStats();
   renderCurfew();
   setInterval(renderCurfew, 30000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) renderCurfew(); });
