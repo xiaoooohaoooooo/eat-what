@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>今天吃什么 v2.0 · 随机决定器</title>
+<title>今天吃什么 v2.1 · 随机决定器</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -95,8 +95,10 @@
   .toggles label{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--dim);cursor:pointer}
   .toggles input{width:16px;height:16px;accent-color:var(--org);cursor:pointer}
   .hist{display:flex;flex-direction:column;gap:5px;max-height:190px;overflow:auto}
-  .hi{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:7px 10px;border-radius:10px;
+  .hi{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:7px 10px;border-radius:10px;cursor:pointer;
+    transition:background .16s,border-color .16s;
     background:rgba(255,255,255,.035);border:1px solid rgba(255,140,43,.16)}
+  .hi:hover{background:rgba(255,140,43,.14);border-color:rgba(255,140,43,.5)}
   .hi .i{color:var(--dim);font-size:11px;min-width:20px}
   .hi .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .hi .tm{color:var(--dim);font-size:11px}
@@ -174,7 +176,7 @@
 <div class="bg"></div><div class="grid"></div>
 <div class="wrap">
   <header>
-    <div class="brand">今天吃什么 · v2.0</div>
+    <div class="brand">今天吃什么 · v2.1</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -226,7 +228,7 @@
   </div>
 
   <div class="card">
-    <h2>最近抽到 / 吃过</h2>
+    <h2>最近抽到 / 吃过 <span class="cnt">点任意一条可切换「吃过 / 没吃过」</span></h2>
     <div class="hist" id="hist"><div class="empty">还没有记录～</div></div>
   </div>
 
@@ -853,7 +855,7 @@
     state.hist.unshift({ n: f.n, t: Date.now(), eaten: false });
     if (state.hist.length > 40) state.hist.pop();
     bumpStat(f.n, false);
-    save(); renderHist(); refresh(); renderStats();
+    save(); renderHist(); refresh(); renderStats(); syncEatenBtn();
     state.rolling = false;
     el('draw').disabled = false; el('eaten').disabled = false;
     if (pendingDone) { var cb = pendingDone; pendingDone = null; setTimeout(cb, 250); }
@@ -1024,7 +1026,7 @@
     g.fillText('今 天 吃 什 么', W / 2, 130);
     g.fillStyle = 'rgba(192,160,138,.9)';
     g.font = '22px ' + F;
-    g.fillText('随机决定器 · v2.0', W / 2, 170);
+    g.fillText('随机决定器 · v2.1', W / 2, 170);
     // 主菜名
     g.fillStyle = '#fff';
     var size = 74;
@@ -1166,6 +1168,27 @@
     }
   }
 
+  function findHist(n) {
+    for (var i = 0; i < state.hist.length; i++) { if (state.hist[i].n === n) return state.hist[i]; }
+    return null;
+  }
+  // 标记 / 撤销标记；返回是否真的改了
+  function markEaten(n, on) {
+    var h = findHist(n);
+    if (!h || !!h.eaten === !!on) return false;
+    h.eaten = !!on;
+    if (!stats[n]) stats[n] = { c: 0, e: 0, last: Date.now() };
+    stats[n].e = Math.max(0, stats[n].e + (on ? 1 : -1));
+    return true;
+  }
+  function syncEatenBtn() {
+    var b = el('eaten');
+    if (!b) return;
+    if (!state.current) { b.textContent = '✅ 吃了这个'; return; }
+    var h = findHist(state.current.n);
+    b.textContent = (h && h.eaten) ? '↩️ 撤销标记' : '✅ 吃了这个';
+  }
+
   function renderHist() {
     var box = el('hist');
     if (!state.hist.length) { box.innerHTML = '<div class="empty">还没有记录～</div>'; return; }
@@ -1173,12 +1196,20 @@
     state.hist.slice(0, 25).forEach(function (h, i) {
       var d = document.createElement('div');
       d.className = 'hi' + (h.eaten ? ' eaten' : '');
+      d.title = '点一下切换「吃过 / 没吃过」';
       var dt = new Date(h.t);
       var tm = (dt.getMonth() + 1) + '/' + dt.getDate() + ' ' +
         String(dt.getHours()).padStart(2, '0') + ':' + String(dt.getMinutes()).padStart(2, '0');
       d.innerHTML = '<span class="i">' + (i + 1) + '</span>' +
         '<span class="nm">' + esc(h.n) + '</span>' +
         '<span class="tm">' + tm + '</span>';
+      d.onclick = function () {
+        var was = h.eaten;
+        if (!markEaten(h.n, !was)) return;
+        sfxSoft(); save(); renderHist(); renderStats(); syncEatenBtn();
+        el('tag').textContent = was ? ('↩️ 已撤销：' + h.n) : ('✅ 已标记：' + h.n);
+        toast((was ? '↩️ 撤销了：' : '✅ 记下了：') + h.n);
+      };
       box.appendChild(d);
     });
   }
@@ -1217,16 +1248,17 @@
   el('draw').onclick = function () { roll(); };
   el('eaten').onclick = function () {
     if (!state.current) { toast('先抽一个再标记呀'); return; }
-    var hit = false;
-    for (var i = 0; i < state.hist.length; i++) {
-      if (state.hist[i].n === state.current.n && !state.hist[i].eaten) {
-        state.hist[i].eaten = true; hit = true; break;
-      }
+    var h = findHist(state.current.n);
+    var was = !!(h && h.eaten);
+    if (!markEaten(state.current.n, !was)) {
+      toast('记录已经清掉了，没法改这个');
+      return;
     }
-    if (hit) bumpStat(state.current.n, true);
-    sfxSoft(); save(); renderHist(); renderStats();
-    el('tag').textContent = '✅ 已标记：' + state.current.n + '（下次会先避开）';
-    toast(hit ? ('✅ 记下了：' + state.current.n) : '这个之前就标记过啦');
+    sfxSoft(); save(); renderHist(); renderStats(); syncEatenBtn();
+    el('tag').textContent = was
+      ? ('↩️ 已撤销：' + state.current.n + '（下次还会抽到）')
+      : ('✅ 已标记：' + state.current.n + '（下次会先避开）');
+    toast(was ? ('↩️ 撤销了：' + state.current.n) : ('✅ 记下了：' + state.current.n));
   };
   el('clear').onclick = function () {
     if (!confirm('清空「最近抽到 / 吃过」列表？（战绩统计不受影响）')) return;
