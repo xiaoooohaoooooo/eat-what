@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>今天吃什么 v2.1 · 随机决定器</title>
+<title>今天吃什么 v2.2 · 随机决定器</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -176,7 +176,7 @@
 <div class="bg"></div><div class="grid"></div>
 <div class="wrap">
   <header>
-    <div class="brand">今天吃什么 · v2.1</div>
+    <div class="brand">今天吃什么 · v2.2</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -283,6 +283,23 @@
           <option value="早餐,午餐,晚餐,夜宵">全天</option>
         </select>
         <input id="mNote" placeholder="备注（选填）" maxlength="30">
+      </div>
+      <div class="fr">
+        <input id="mTag" list="tagPresets" placeholder="⭐ 口碑标签（选填），如：老板人超好" maxlength="16">
+        <datalist id="tagPresets">
+          <option value="回头客太多了"></option>
+          <option value="太划算了！"></option>
+          <option value="精选好店"></option>
+          <option value="价格合理"></option>
+          <option value="热情掌柜"></option>
+          <option value="一如既往的好"></option>
+          <option value="图文相符"></option>
+          <option value="这样的商家可不多了"></option>
+          <option value="老板人超好"></option>
+          <option value="分量足"></option>
+          <option value="干净卫生"></option>
+          <option value="上菜快"></option>
+        </datalist>
       </div>
       <button id="mAdd">➕ 加进池子</button>
     </div>
@@ -686,6 +703,13 @@
     hist: [], noRepeat: true, sfx: true, rolling: false, current: null
   };
   function getDB() { return FOODS.concat(custom); }
+  // 取门店附加信息：内置店查 SHOPMETA，自己加的店读它自己身上的字段
+  function metaOf(f) {
+    var m = SHOPMETA[f.n];
+    if (m) return m;
+    if (f.tag || f.d || f.qs) return { tag: f.tag || '', d: f.d || 0, qs: f.qs || 0 };
+    return null;
+  }
   function esc(s) {
     return String(s).replace(/[&<>"]/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
@@ -903,13 +927,14 @@
       box.appendChild(s);
     };
     var loc = f.loc || '通用';
-    var m = SHOPMETA[f.n];
+    var m = metaOf(f);
     var note = f.c || '';
     if (m) {
       if (m.d) add('📍 ' + m.d + 'm', 'dist');
       if (m.qs) add('🛒 起送 ¥' + m.qs, 'qs');
       // 「搭配」那行已经写了同一句口碑就不用重复了
       if (m.tag && note.indexOf(m.tag) < 0) add('⭐ ' + m.tag);
+      if (!m.tag && !m.d && !m.qs && loc !== '通用') add('📍 ' + loc, 'dist');
     } else if (loc !== '通用') {
       add('📍 ' + loc, 'dist');
     }
@@ -1026,7 +1051,7 @@
     g.fillText('今 天 吃 什 么', W / 2, 130);
     g.fillStyle = 'rgba(192,160,138,.9)';
     g.font = '22px ' + F;
-    g.fillText('随机决定器 · v2.1', W / 2, 170);
+    g.fillText('随机决定器 · v2.2', W / 2, 170);
     // 主菜名
     g.fillStyle = '#fff';
     var size = 74;
@@ -1046,7 +1071,7 @@
     g.fillStyle = '#ffd166';
     g.fillText(f.t + '  ·  ' + f.p + '  ·  ' + f.s.join('/'), W / 2, 540);
     // 徽章
-    var m = SHOPMETA[f.n], by = 610, bx = [];
+    var m = metaOf(f), by = 610, bx = [];
     if (m) {
       if (m.d) bx.push('📍 ' + m.d + 'm');
       if (m.qs) bx.push('🛒 起送 ¥' + m.qs);
@@ -1133,11 +1158,13 @@
     custom.push({
       n: n, t: el('mType').value, loc: el('mLoc').value, m: m,
       p: el('mPrice').value, s: ['单人', '两人'],
-      c: (el('mNote').value || '').trim() || '自己加的'
+      c: (el('mNote').value || '').trim() || '自己加的',
+      tag: (el('mTag').value || '').trim()
     });
-    el('mName').value = ''; el('mNote').value = '';
+    el('mName').value = ''; el('mNote').value = ''; el('mTag').value = '';
     saveMine(); buildChips(); refresh(); renderMine(); renderStats();
-    sfxSoft(); toast('✅ 已加进池子：' + n);
+    sfxSoft();
+    toast('✅ 已加进池子：' + n + (custom[custom.length - 1].tag ? '（⭐ ' + custom[custom.length - 1].tag + '）' : ''));
   }
   function renderMine() {
     var box = el('mineList'); if (!box) return;
@@ -1148,12 +1175,30 @@
       custom.forEach(function (f, i) {
         var d = document.createElement('div');
         d.className = 'mn';
+        var tag = (f.tag || '').trim();
         d.innerHTML = '<span class="nm">' + esc(f.n) + '</span>' +
-          '<span class="mt" style="font-size:10.5px;color:#c0a08a;flex:none">' + esc(f.loc || '通用') + '</span>' +
+          '<span style="font-size:10.5px;color:#c0a08a;flex:none">' + esc(f.loc || '通用') + '</span>' +
+          (tag
+            ? '<span class="badge" style="flex:none">⭐ ' + esc(tag) + '</span>'
+            : '<span style="font-size:10.5px;color:rgba(192,160,138,.5);flex:none">无标签</span>') +
+          '<button class="del" data-tag="' + i + '" style="background:rgba(255,209,102,.2);color:#ffd166">标</button>' +
           '<button class="del" data-i="' + i + '">删</button>';
         box.appendChild(d);
       });
-      box.querySelectorAll('.del').forEach(function (b) {
+      box.querySelectorAll('.del[data-tag]').forEach(function (b) {
+        b.onclick = function () {
+          var i = parseInt(this.dataset.tag, 10);
+          var cur = custom[i].tag || '';
+          var v = prompt('给「' + custom[i].n + '」写个口碑标签（留空则删除）：', cur);
+          if (v === null) return;
+          custom[i].tag = v.trim().slice(0, 16);
+          saveMine(); renderMine(); renderStats();
+          if (state.current && state.current.n === custom[i].n) renderMeta(state.current);
+          sfxSoft();
+          toast(custom[i].tag ? ('⭐ 标签已改：' + custom[i].tag) : '标签已清空');
+        };
+      });
+      box.querySelectorAll('.del[data-i]').forEach(function (b) {
         b.onclick = function () {
           custom.splice(parseInt(this.dataset.i, 10), 1);
           saveMine(); buildChips(); refresh(); renderMine(); renderStats();
@@ -1164,7 +1209,7 @@
     var hint = el('mineHint');
     if (hint) {
       hint.textContent = '现在池子里 ' + getDB().length + ' 种（自带 ' + FOODS.length +
-        ' + 你自己加的 ' + custom.length + '）。数据只存在你这台设备上，不会影响公网版本。';
+        ' + 你自己加的 ' + custom.length + '）。点「标」可以随时改口碑标签；数据只存在你这台设备上。';
     }
   }
 
