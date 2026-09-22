@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>今天吃什么 v4.4 · 随机决定器</title>
+<title>今天吃什么 v5.0 · 实时定位版</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -187,7 +187,7 @@
 <div class="bg"></div><div class="grid"></div>
 <div class="wrap">
   <header>
-    <div class="brand">今天吃什么 · v4.4</div>
+    <div class="brand">今天吃什么 · v5.0</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -217,6 +217,7 @@
 
   <div class="acts">
     <button class="hot" id="quick">🏠 楼下随便吃点</button>
+    <button id="locBtn">📍 用我的位置</button>
     <button id="navBtn">🗺️ 导航去这家</button>
     <button id="shot">📸 存成图片</button>
     <button id="tagBtn">⭐ 改这个的标签</button>
@@ -326,6 +327,7 @@
 
   <footer>
     快捷键：<kbd>空格</kbd> 再抽一次　<kbd>Enter</kbd> 标记吃了　<kbd>Q</kbd> 楼下随便吃点<br>
+    <b>📏</b> 按你的定位算的直线距离　·　<b>📍</b> 参考距离（没定位时用）<br>
     共 <span id="totalNum">0</span> 种吃法 · 数据存在本机 · 祝你不纠结，吃得香 🍚
   </footer>
 </div>
@@ -336,12 +338,112 @@
 (function () {
   var TYPES = ['早餐', '主食', '面食', '快餐', '家常炒菜', '火锅', '烤肉烧烤', '聚餐硬菜', '东北特色', '小吃夜宵', '饮品甜品', '异国料理'];
   var LOCS = ['通用', '吉吉大学后花园（长春建筑学院高新校区）', '日新楼', '吉大周边', '长春必吃榜'];
-  // 每个地点的「实地提示」—— 地图和外卖 App 都不会说的，只有本人才知道
+  // 每个地点的「实地提示」—— 写成对所有人都成立的客观事实（不写"你楼下"）
+  // 这样吉大的学生拿去用也不会错
   var LOC_NOTE = {
-    '吉吉大学后花园（长春建筑学院高新校区）': '🏠 你楼下 · 味美生活可送到寝室',
-    '日新楼': '🚧 只送吉大校内 · 你点不了外卖，得走过去',
-    '吉大周边': '🚶 校外步行范围内',
-    '长春必吃榜': '🚇 得坐车进城'
+    '吉吉大学后花园（长春建筑学院高新校区）': '🏠 长春建筑学院高新校区内',
+    '日新楼': '🚧 校内配送仅限吉大',
+    '吉大周边': '🚶 吉大南校周边',
+    '长春必吃榜': '🚇 市区 · 需坐车'
+  };
+  // 坐标锚点（WGS84 十进制）—— 由实测提供
+  var ANCHOR = {
+    '小食代': { lat: 43.817033, lon: 125.275218 },
+    '风情街': { lat: 43.818092, lon: 125.278920 },
+    '日新楼': { lat: 43.821601, lon: 125.276670 }
+  };
+  // 商圈的坐标（必吃榜门店用，离线地理编码得到）
+  var AREA_GEO = {
+    '鑫鼎华·恒旭干锅辣鸭头（红旗街店）': { lat: 43.868056, lon: 125.296606 },   // 红旗街
+    '八味麻辣香锅（桂林路店）': { lat: 43.87033, lon: 125.315506 },   // 桂林路
+    '琼花菜馆': { lat: 43.886652, lon: 125.318167 },   // 人民广场
+    '马家饭堂（南街熏酱店）': { lat: 43.864286, lon: 125.349589 },   // 南关区政府
+    '万里闯关东铁锅炖菜馆（吉林大路店）': { lat: 43.879789, lon: 125.369841 },   // 东盛/劳动公园
+    '长春饭店（平泉路店）': { lat: 43.87033, lon: 125.315506 },   // 桂林路
+    '锅边鱼·铁锅炖（曙光路店）': { lat: 43.87938, lon: 125.35129 },   // 全安广场
+    '吉林省林业宾馆-餐厅': { lat: 43.87033, lon: 125.315506 },   // 桂林路
+    '咱田叔小油饼·非遗吉菜（长春总店）': { lat: 43.905588, lon: 125.348814 },   // 伪满皇宫博物院
+    '素逸·泰料理（人民广场店）': { lat: 43.886652, lon: 125.318167 },   // 人民广场
+    '麻雀牌小龙虾（新疆街店）': { lat: 43.87033, lon: 125.315506 },   // 桂林路
+    '郭玉林风味冷面馆（信合公寓店）': { lat: 43.913597, lon: 125.324632 },   // 火车站
+    '枫林饺子': { lat: 43.859855, lon: 125.289078 },   // 湖西路
+    '高老板特色刀削面（百汇街店）': { lat: 43.866357, lon: 125.318244 },   // 南岭商圈
+    '曹宝林砂锅麻辣烫（星光路店）': { lat: 43.866357, lon: 125.318244 },   // 南岭商圈
+    '牛马行牛肉饸饹铺（长春总店）': { lat: 43.868056, lon: 125.296606 },   // 红旗街
+    '军辉烧烤（世光路一店）': { lat: 43.804385, lon: 125.392121 },   // 世荣路/南三环
+    '延边金利串店（安达街店）': { lat: 43.881924, lon: 125.298471 },   // 建设街
+    '柴大叔土窑坑烤（红旗街店）': { lat: 43.859855, lon: 125.289078 },   // 湖西路
+    '儿时老街·小贱烧烤': { lat: 43.829078, lon: 125.223095 },   // 东风大街/汽车开发区
+    '一吉烧鸟·FOUNDER（桂林路店）': { lat: 43.87033, lon: 125.315506 },   // 桂林路
+    '天添纸包鸡家常菜': { lat: 43.77873, lon: 125.452782 },   // 净月开发区
+    '四海回族饭店（前进大街店）': { lat: 43.942904, lon: 125.369313 },   // 力旺广场
+    '蒙古人烤羊大师·绿野餐厅（工农大路店）': { lat: 43.862387, lon: 125.301767 },   // 南湖公园
+    '月木漾西餐厅（明宇金融广场店）': { lat: 43.77873, lon: 125.452782 },   // 净月开发区
+    'BellaNapoli·倍勒那不勒斯意大利餐馆': { lat: 43.829078, lon: 125.223095 },   // 东风大街/汽车开发区
+    '食间牛排（重庆路万达店）': { lat: 43.886652, lon: 125.318167 },   // 人民广场
+    '仁风阁（西朝阳路店）': { lat: 43.881924, lon: 125.298471 },   // 建设街
+    '大同江朝鲜菜（欧亚卖场店）': { lat: 43.841293, lon: 125.244843 },   // 欧亚卖场
+    '集韩小木屋（锦程大街店）': { lat: 43.829078, lon: 125.223095 },   // 东风大街/汽车开发区
+    '麗華盛茶餐廳（西康胡同店）': { lat: 43.87033, lon: 125.315506 },   // 桂林路
+    '元盛居（生态大街店）': { lat: 43.804385, lon: 125.392121 },   // 世荣路/南三环
+    '千亿来东北乌拉火锅（东盛店）': { lat: 43.879789, lon: 125.369841 },   // 东盛/劳动公园
+    '龙源斑鱼坊（湖西路店）': { lat: 43.859855, lon: 125.289078 },   // 湖西路
+    '庭院海派火锅（国贸店）': { lat: 43.886652, lon: 125.318167 },   // 人民广场
+    '东道煮牛肉火锅（创业大街店）': { lat: 43.85155, lon: 125.21963 },   // 创业大街
+    '今日牛市潮汕牛肉火锅（自由大路店）': { lat: 43.87033, lon: 125.315506 },   // 桂林路
+    '楼外楼大刀肉传统火锅居（生态大街店）': { lat: 43.789479, lon: 125.383062 },   // 生态大街
+    '好之味豆捞火锅': { lat: 43.879201, lon: 125.426041 },   // 珠海路/经济开发区
+    '钱锋炭缸烧烤（南湖大路总店）': { lat: 43.853797, lon: 125.405432 },   // 东南湖大路
+    '马五婶牛肉锅贴（夏荷路店）': { lat: 43.802291, lon: 125.451709 },   // 净月开发区/净月潭
+    '星多客烤鱼（创始店）': { lat: 43.879789, lon: 125.369841 },   // 东盛/劳动公园
+    '同达锅叉子酸菜烤肉（磐石路店）': { lat: 43.851171, lon: 125.334198 },   // 工大南门
+    '吉炙核桃烤肉': { lat: 43.884327, lon: 125.293986 },   // 朝阳桥
+    '董鲁烤鸭（工农大路店）': { lat: 43.862387, lon: 125.301767 },   // 南湖公园
+    '大自然海鲜烤肉': { lat: 43.87033, lon: 125.315506 },   // 桂林路
+    // —— 吉大周边（离线地理编码，已过滤掉明显匹配错的）——
+    '阿旺土豆粉花甲粉': { lat: 43.826599, lon: 125.29258 },   // 1753m
+    '阿呆炒饭': { lat: 43.82637, lon: 125.292586 },   // 1738m
+    '别把楞了来吃点好的': { lat: 43.817845, lon: 125.256473 },   // 1507m
+    '焗里焗外芝士焗饭': { lat: 43.824501, lon: 125.292485 },   // 1615m
+    '初小妖辣椒炒肉': { lat: 43.824537, lon: 125.293222 },   // 1668m
+    '冒菜·麻辣香锅': { lat: 43.815876, lon: 125.249155 },   // 2095m
+    '焗饭传说芝士焗饭': { lat: 43.824501, lon: 125.292485 },   // 1615m
+    '釜山美食': { lat: 43.829181, lon: 125.279154 },   // 1387m
+    '古早集沙拉轻食': { lat: 43.821325, lon: 125.276725 },   // 492m
+    '实程聚砂锅卤肉': { lat: 43.82717, lon: 125.28605 },   // 1423m
+    '前卫校区四餐厅': { lat: 43.823087, lon: 125.277218 },   // 692m
+    '东北王牛肉面': { lat: 43.821372, lon: 125.276664 },   // 496m
+    '李先生牛肉面': { lat: 43.817805, lon: 125.253433 },   // 1750m
+    '刘福记大理寺过桥米线': { lat: 43.827927, lon: 125.280459 },   // 1282m
+    '于二油泼面饺子': { lat: 43.821425, lon: 125.276624 },   // 501m
+    '渝小婿抄手豌杂面': { lat: 43.82833, lon: 125.279144 },   // 1295m
+    '小陈同学米线': { lat: 43.8254, lon: 125.276129 },   // 933m
+    '聚香源米线麻辣烫': { lat: 43.826599, lon: 125.293041 },   // 1782m
+    '蜀王房记砂锅麻辣烫': { lat: 43.826666, lon: 125.279121 },   // 1116m
+    '喜翻拌麻辣拌': { lat: 43.826673, lon: 125.279137 },   // 1117m
+    '吉晟居砂锅麻辣烫炸串': { lat: 43.826684, lon: 125.279175 },   // 1119m
+    '冯记麻辣烫面串坊': { lat: 43.82842, lon: 125.27915 },   // 1305m
+    '马金龙麻辣烫自选餐厅': { lat: 43.827234, lon: 125.287974 },   // 1528m
+    '蜀乔记川味麻辣烫': { lat: 43.8317, lon: 125.28586 },   // 1841m
+    '红辣椒麻辣烫米线': { lat: 43.8312, lon: 125.28221 },   // 1672m
+    '洪宇川味火锅': { lat: 43.825545, lon: 125.276662 },   // 954m
+    '吾少爷毛肚火锅': { lat: 43.827273, lon: 125.289125 },   // 1594m
+    '六点半烧烤': { lat: 43.825504, lon: 125.276545 },   // 948m
+    '味不同烧烤': { lat: 43.825555, lon: 125.276718 },   // 955m
+    '一路飘香烧烤': { lat: 43.825668, lon: 125.277055 },   // 971m
+    '吉林李胖烧鸽海鲜坊': { lat: 43.828938, lon: 125.279656 },   // 1371m
+    '老杨太太烤牛肉': { lat: 43.828628, lon: 125.279768 },   // 1340m
+    '盐五许烤肉': { lat: 43.826142, lon: 125.263937 },   // 1358m
+    '大学城烤肉': { lat: 43.820967, lon: 125.27611 },   // 443m
+    '哞哞火烤牛肉': { lat: 43.82161, lon: 125.27668 },   // 522m
+    '火焰山新疆美食': { lat: 43.827718, lon: 125.280316 },   // 1257m
+    '麻里麻里香锅': { lat: 43.828137, lon: 125.281069 },   // 1321m
+    '熊猫生煎': { lat: 43.825545, lon: 125.276662 },   // 954m
+    '故事里的炸鸡': { lat: 43.826653, lon: 125.293296 },   // 1802m
+    '广式蒸肠粉': { lat: 43.826599, lon: 125.279387 },   // 1115m
+    '易阿姨奶茶': { lat: 43.820898, lon: 125.276915 },   // 451m
+    '小榴芒私房甜品': { lat: 43.827159, lon: 125.279536 },   // 1178m
+    '房角石咖啡与书': { lat: 43.829569, lon: 125.28937 },   // 1798m
   };
   var MEALS = ['早餐', '午餐', '晚餐', '夜宵'];
   var PRICES = ['便宜', '中等', '小贵'];
@@ -1149,6 +1251,56 @@
     toastTimer = setTimeout(function () { t.classList.remove('on'); }, 2800);
   }
 
+  // ------------------------------------------------ 📡 实时定位 · 算真实距离
+  // 定位本身是浏览器一行 API；难点是坐标 —— 现在锚点有了，就能对任何人算距离
+  var GEO_KEY = 'eat-what-geo';
+  var myPos = null;          // { lat, lon, acc, t }
+  function loadGeo() {
+    try {
+      var d = JSON.parse(localStorage.getItem(GEO_KEY) || 'null');
+      if (d && isFinite(d.lat) && isFinite(d.lon)) myPos = d;
+    } catch (e) {}
+  }
+  function saveGeo() { try { localStorage.setItem(GEO_KEY, JSON.stringify(myPos)); } catch (e) {} }
+  // 球面距离（米）
+  function haversine(a, b) {
+    var R = 6371000, t = Math.PI / 180;
+    var dLat = (b.lat - a.lat) * t, dLon = (b.lon - a.lon) * t;
+    var x = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(a.lat * t) * Math.cos(b.lat * t) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return Math.round(2 * R * Math.asin(Math.sqrt(x)));
+  }
+  // 这家店挂在哪个坐标锚点上
+  function anchorOf(f) {
+    var loc = f.loc || '通用';
+    if (loc === '日新楼') return ANCHOR['日新楼'];
+    if (loc === '吉吉大学后花园（长春建筑学院高新校区）') {
+      var c = f.c || '';
+      if (c.indexOf('风情街') >= 0 || c.indexOf('商业街') >= 0) return ANCHOR['风情街'];
+      return ANCHOR['小食代'];
+    }
+    if (AREA_GEO[f.n]) return AREA_GEO[f.n];
+    return null;
+  }
+  function fmtDist(m) { return m >= 1000 ? (m / 1000).toFixed(1) + 'km' : m + 'm'; }
+  function locate() {
+    if (!navigator.geolocation) { toast('❌ 这个浏览器不支持定位'); return; }
+    toast('📡 正在定位…（首次会弹"允许"）');
+    navigator.geolocation.getCurrentPosition(function (p) {
+      myPos = {
+        lat: +p.coords.latitude.toFixed(6),
+        lon: +p.coords.longitude.toFixed(6),
+        acc: Math.round(p.coords.accuracy || 0),
+        t: Date.now()
+      };
+      saveGeo(); refresh(); if (state.current) renderMeta(state.current);
+      toast('📍 定位成功 · 精度 ±' + myPos.acc + 'm');
+    }, function (err) {
+      var m = (err && err.code === 1) ? '被拒绝或页面不是 HTTPS' : ((err && err.message) || '未知错误');
+      toast('❌ 定位失败：' + m);
+    }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+  }
+
   var ac = null;
   function ensureAudio() { if (ac) return; try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { ac = null; } }
   function tone(f, d, t, v, dl) {
@@ -1269,6 +1421,7 @@
     el('typeCnt').textContent = state.types.join(' ');
     el('priceCnt').textContent = state.prices.join(' ');
     if (el('rateCnt')) el('rateCnt').textContent = state.rate === '不限' ? '不限' : ('≥ ' + state.rate + ' 星');
+    if (el('locBtn')) el('locBtn').textContent = myPos ? ('📏 已定位 ±' + (myPos.acc || 0) + 'm') : '📍 用我的位置';
     el('subline').textContent = '共 ' + getDB().length + ' 种吃法 · 当前可选 ' + pool.length + ' 种';
     if (!pool.length) el('tag').textContent = '当前筛选没有可选项（放宽一点吧）';
   }
@@ -1378,6 +1531,10 @@
     var loc = f.loc || '通用';
     var m = metaOf(f);
     var note = f.c || '';
+    // 📏 距离：只要有坐标锚点就显示，和有没有 SHOPMETA 无关
+    var anchor = anchorOf(f);
+    var real = (myPos && anchor) ? haversine(myPos, anchor) : null;
+    if (real != null) add('📏 ' + fmtDist(real), 'dist');
     if (m) {
       if (m.r) {
         var rb = document.createElement('span');
@@ -1386,15 +1543,16 @@
         if (m.r < 3.5) { rb.style.background = 'rgba(255,77,77,.2)'; rb.style.borderColor = 'rgba(255,77,77,.6)'; rb.style.color = '#ff9b9b'; }
         box.appendChild(rb);
       }
-      if (m.d) add('📍 ' + (m.d >= 1000 ? (m.d / 1000).toFixed(1) + 'km' : m.d + 'm'), 'dist');
+      // 没定位时退回登记好的参考距离
+      if (real == null && m.d) add('📍 ' + fmtDist(m.d), 'dist');
       if (m.qs) add('🛒 起送 ¥' + m.qs, 'qs');
       // 「搭配」那行已经写了同一句口碑就不用重复了
       if (m.tag && note.indexOf(m.tag) < 0) {
         var isBcb = m.tag.indexOf('必吃榜') === 0;
         add((isBcb ? '🏅 ' : '🏷️ ') + m.tag, isBcb ? 'bcb' : 'tagm');
       }
-      if (!m.tag && !m.d && !m.qs && !m.r && loc !== '通用') add('📍 ' + loc, 'dist');
-    } else if (loc !== '通用') {
+      if (!m.tag && !m.d && !m.qs && !m.r && !m.dt && loc !== '通用') add('📍 ' + loc, 'dist');
+    } else if (real == null && loc !== '通用') {
       add('📍 ' + loc, 'dist');
     }
     // 地点实地提示（不管有没有 SHOPMETA 都显示）
@@ -1837,6 +1995,7 @@
     el('partyCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
     setTimeout(partyRoll, 320);
   };
+  el('locBtn').onclick = function () { ensureAudio(); locate(); };
   el('navBtn').onclick = function () { navigate(); };
   el('tagBtn').onclick = function () {
     if (!state.current) { toast('先抽一个，再给它写标签'); return; }
@@ -1867,7 +2026,7 @@
     window.addEventListener(ev, function once() { ensureAudio(); if (ac && ac.state === 'suspended') ac.resume(); }, { once: true });
   });
 
-  loadMine(); loadStat(); loadTagOv(); load();
+  loadMine(); loadStat(); loadTagOv(); loadGeo(); load();
   buildMineForm(); buildChips(); refresh(); renderHist(); renderMine(); renderTagList(); renderStats();
   renderCurfew();
   setInterval(renderCurfew, 30000);
