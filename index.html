@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>今天吃什么 v5.0 · 实时定位版</title>
+<title>今天吃什么 v5.1 · 实时定位 + 可改评分</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -187,7 +187,7 @@
 <div class="bg"></div><div class="grid"></div>
 <div class="wrap">
   <header>
-    <div class="brand">今天吃什么 · v5.0</div>
+    <div class="brand">今天吃什么 · v5.1</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -320,14 +320,14 @@
       <button id="mAdd">➕ 加进池子</button>
     </div>
     <div class="minelist" id="mineList"></div>
-    <h2 style="margin-top:16px">⭐ 我改过的标签 <span class="cnt">内置店也能改，点「还原」恢复</span></h2>
+    <h2 style="margin-top:16px">⭐ 我改过的标签 / 评分 <span class="cnt">点「还原」恢复原样</span></h2>
     <div class="minelist" id="tagList"></div>
     <div class="hint" id="mineHint"></div>
   </div>
 
   <footer>
     快捷键：<kbd>空格</kbd> 再抽一次　<kbd>Enter</kbd> 标记吃了　<kbd>Q</kbd> 楼下随便吃点<br>
-    <b>📏</b> 按你的定位算的直线距离　·　<b>📍</b> 参考距离（没定位时用）<br>
+    <b>📏</b> 按你的定位算的直线距离　·　<b>📍</b> 参考距离（没定位时用）<br>评分徽章和标签都能改，只存你本机 ✎<br>
     共 <span id="totalNum">0</span> 种吃法 · 数据存在本机 · 祝你不纠结，吃得香 🍚
   </footer>
 </div>
@@ -1197,33 +1197,63 @@
   var MINE_KEY = 'eat-what-mine-v1';
   var STAT_KEY = 'eat-what-stat-v1';
   var TAGOV_KEY = 'eat-what-tagov-v1';
+  var RATEOV_KEY = 'eat-what-rateov-v1';
   var CURFEW_H = 21, CURFEW_M = 30;   // 封寝时间
   var el = function (id) { return document.getElementById(id); };
   var custom = [];    // 自己加的店
   var stats = {};     // { 店名: { c: 抽到次数, e: 吃过次数, last: 时间戳 } }
   var tagOv = {};     // { 店名: '自定义标签' } —— 覆盖任意店（含内置）的口碑标签，'' 表示抹掉
+  var rateOv = {};    // { 店名: 4.5 } —— 覆盖评分；0 表示"标为无评分"
   var state = {
     scenes: SCENES.slice(), meals: MEALS.slice(), types: TYPES.slice(), prices: PRICES.slice(), locs: LOCS.slice(),
     hist: [], noRepeat: true, sfx: true, rolling: false, current: null, rate: '不限'
   };
   function getDB() { return FOODS.concat(custom); }
   // 取门店附加信息：内置店查 SHOPMETA，自己加的店读它自己身上的字段，
-  // 最后统一套用本机自定义的标签覆盖（对内置店、自定义店都生效）
+  // 最后统一套用本机自定义的标签/评分覆盖（对内置店、自定义店都生效）
   function metaOf(f) {
     var base = SHOPMETA[f.n];
     var m = base
       ? { d: base.d || 0, qs: base.qs || 0, tag: base.tag || '', r: base.r || 0 }
       : { d: f.d || 0, qs: f.qs || 0, tag: f.tag || '', r: f.r || 0 };
     if (Object.prototype.hasOwnProperty.call(tagOv, f.n)) m.tag = tagOv[f.n] || '';
-    if (!m.tag && !m.d && !m.qs && !m.r) return null;
+    if (Object.prototype.hasOwnProperty.call(rateOv, f.n)) m.r = rateOv[f.n] || 0;
+    if (!m.tag && !m.d && !m.qs && !m.r && !hasRateOv(f.n)) return null;
     return m;
   }
+  function hasRateOv(n) { return Object.prototype.hasOwnProperty.call(rateOv, n); }
   function saveTagOv() { try { localStorage.setItem(TAGOV_KEY, JSON.stringify(tagOv)); } catch (e) {} }
   function loadTagOv() {
     try {
       var d = JSON.parse(localStorage.getItem(TAGOV_KEY) || '{}');
       if (d && typeof d === 'object' && !Array.isArray(d)) tagOv = d; else tagOv = {};
     } catch (e) { tagOv = {}; }
+  }
+  function saveRateOv() { try { localStorage.setItem(RATEOV_KEY, JSON.stringify(rateOv)); } catch (e) {} }
+  function loadRateOv() {
+    try {
+      var d = JSON.parse(localStorage.getItem(RATEOV_KEY) || '{}');
+      if (d && typeof d === 'object' && !Array.isArray(d)) rateOv = d; else rateOv = {};
+    } catch (e) { rateOv = {}; }
+  }
+  // 改任意一家店的评分；返回是否改动
+  //   输入 0~5 的数字 → 覆盖为该分（支持 4.5 这种小数）
+  //   输入 空        → 覆盖为"无评分"（0）
+  //   点取消         → 不改
+  function editRate(name) {
+    var cur = hasRateOv(name) ? (rateOv[name] || 0)
+      : ((SHOPMETA[name] && SHOPMETA[name].r) || 0);
+    var v = prompt('给「' + name + '」打几分？（0 ~ 5，可填 4.5）\n留空 = 标为「无评分」　点取消 = 不改', cur ? String(cur) : '');
+    if (v === null) return false;
+    v = v.trim();
+    var num = v === '' ? 0 : parseFloat(v);
+    if (v !== '' && (!isFinite(num) || num < 0 || num > 5)) { toast('❌ 请输入 0 ~ 5 之间的数'); return false; }
+    num = Math.round(num * 10) / 10;
+    var base = (SHOPMETA[name] && SHOPMETA[name].r) || 0;
+    if (num === base) delete rateOv[name]; else rateOv[name] = num;
+    saveRateOv(); renderTagList();
+    if (state.current && state.current.n === name) renderMeta(state.current);
+    return true;
   }
   // 改任意一家店的标签；v 传 null 表示取消；传 '' 表示抹掉标签
   function editTag(name, suggest) {
@@ -1535,14 +1565,26 @@
     var anchor = anchorOf(f);
     var real = (myPos && anchor) ? haversine(myPos, anchor) : null;
     if (real != null) add('📏 ' + fmtDist(real), 'dist');
+    // ⭐ 评分徽章：点一下就能改（只存本机，不动公网那份数据）
+    // 放在 if (m) 外面 —— 没有 SHOPMETA 的店也要能打分
+    var rateVal = m ? m.r : 0;
+    var rb = document.createElement('span');
+    rb.className = 'badge rate';
+    rb.style.cursor = 'pointer';
+    rb.title = '点一下改评分（存在你本机）';
+    if (rateVal) {
+      rb.textContent = '⭐ ' + rateVal.toFixed(1);
+      if (rateVal < 3.5) { rb.style.background = 'rgba(255,77,77,.2)'; rb.style.borderColor = 'rgba(255,77,77,.6)'; rb.style.color = '#ff9b9b'; }
+    } else {
+      rb.textContent = '⭐ 打分？';
+      rb.style.opacity = '.6';
+    }
+    if (hasRateOv(f.n)) rb.textContent += ' ✎';
+    rb.onclick = function () {
+      if (editRate(f.n)) { sfxSoft(); toast('⭐ 已更新：' + f.n + ' → ' + (rateOv[f.n] ? rateOv[f.n] + ' 分' : '无评分')); }
+    };
+    box.appendChild(rb);
     if (m) {
-      if (m.r) {
-        var rb = document.createElement('span');
-        rb.className = 'badge rate';
-        rb.textContent = '⭐ ' + m.r.toFixed(1);
-        if (m.r < 3.5) { rb.style.background = 'rgba(255,77,77,.2)'; rb.style.borderColor = 'rgba(255,77,77,.6)'; rb.style.color = '#ff9b9b'; }
-        box.appendChild(rb);
-      }
       // 没定位时退回登记好的参考距离
       if (real == null && m.d) add('📍 ' + fmtDist(m.d), 'dist');
       if (m.qs) add('🛒 起送 ¥' + m.qs, 'qs');
@@ -1854,21 +1896,23 @@
   // 改过标签的店（含内置店）统一列在这里，可一键还原
   function renderTagList() {
     var box = el('tagList'); if (!box) return;
-    var keys = Object.keys(tagOv);
+    var tagKeys = Object.keys(tagOv);
+    var rateKeys = Object.keys(rateOv);
     box.innerHTML = '';
-    if (!keys.length) {
-      box.innerHTML = '<div class="empty">还没改过任何店的标签～<br>' +
-        '<span style="font-size:11px;opacity:.7">抽一个，然后点「⭐ 改这个的标签」</span></div>';
+    if (!tagKeys.length && !rateKeys.length) {
+      box.innerHTML = '<div class="empty">还没改过任何店的标签或评分～<br>' +
+        '<span style="font-size:11px;opacity:.7">抽一个，然后点「⭐ 改这个的标签」，或者直接点结果上的评分徽章</span></div>';
       return;
     }
-    keys.forEach(function (k) {
+    // 改过的标签
+    tagKeys.forEach(function (k) {
       var d = document.createElement('div');
       d.className = 'mn';
       var base = (SHOPMETA[k] && SHOPMETA[k].tag) || '';
       d.innerHTML = '<span class="nm">' + esc(k) + '</span>' +
         '<span style="font-size:10.5px;color:rgba(192,160,138,.55);flex:none;text-decoration:line-through">' +
         (base ? esc(base) : '无') + '</span>' +
-        '<span class="badge" style="flex:none">⭐ ' + (tagOv[k] ? esc(tagOv[k]) : '（已抹掉）') + '</span>' +
+        '<span class="badge" style="flex:none">🏷️ ' + (tagOv[k] ? esc(tagOv[k]) : '（已抹掉）') + '</span>' +
         '<button class="del" data-undo="' + esc(k) + '" style="background:rgba(255,255,255,.12);color:#c0a08a">还原</button>';
       box.appendChild(d);
     });
@@ -1879,6 +1923,27 @@
         saveTagOv(); renderTagList();
         if (state.current && state.current.n === k) renderMeta(state.current);
         sfxSoft(); toast('已还原「' + k + '」的标签');
+      };
+    });
+    // 改过的评分
+    rateKeys.forEach(function (k) {
+      var d = document.createElement('div');
+      d.className = 'mn';
+      var base = (SHOPMETA[k] && SHOPMETA[k].r) || 0;
+      d.innerHTML = '<span class="nm">' + esc(k) + '</span>' +
+        '<span style="font-size:10.5px;color:rgba(192,160,138,.55);flex:none;text-decoration:line-through">' +
+        (base ? '⭐' + base : '无') + '</span>' +
+        '<span class="badge rate" style="flex:none">⭐ ' + (rateOv[k] ? rateOv[k] : '无评分') + '</span>' +
+        '<button class="del" data-undorate="' + esc(k) + '" style="background:rgba(255,255,255,.12);color:#c0a08a">还原</button>';
+      box.appendChild(d);
+    });
+    box.querySelectorAll('.del[data-undorate]').forEach(function (b) {
+      b.onclick = function () {
+        var k = this.dataset.undorate;
+        delete rateOv[k];
+        saveRateOv(); renderTagList();
+        if (state.current && state.current.n === k) renderMeta(state.current);
+        sfxSoft(); toast('已还原「' + k + '」的评分');
       };
     });
   }
@@ -2026,7 +2091,7 @@
     window.addEventListener(ev, function once() { ensureAudio(); if (ac && ac.state === 'suspended') ac.resume(); }, { once: true });
   });
 
-  loadMine(); loadStat(); loadTagOv(); loadGeo(); load();
+  loadMine(); loadStat(); loadTagOv(); loadRateOv(); loadGeo(); load();
   buildMineForm(); buildChips(); refresh(); renderHist(); renderMine(); renderTagList(); renderStats();
   renderCurfew();
   setInterval(renderCurfew, 30000);
