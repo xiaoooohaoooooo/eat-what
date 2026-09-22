@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>今天吃什么 v4.2 · 随机决定器</title>
+<title>今天吃什么 v4.4 · 随机决定器</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -187,7 +187,7 @@
 <div class="bg"></div><div class="grid"></div>
 <div class="wrap">
   <header>
-    <div class="brand">今天吃什么 · v4.2</div>
+    <div class="brand">今天吃什么 · v4.4</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -336,6 +336,13 @@
 (function () {
   var TYPES = ['早餐', '主食', '面食', '快餐', '家常炒菜', '火锅', '烤肉烧烤', '聚餐硬菜', '东北特色', '小吃夜宵', '饮品甜品', '异国料理'];
   var LOCS = ['通用', '吉吉大学后花园（长春建筑学院高新校区）', '日新楼', '吉大周边', '长春必吃榜'];
+  // 每个地点的「实地提示」—— 地图和外卖 App 都不会说的，只有本人才知道
+  var LOC_NOTE = {
+    '吉吉大学后花园（长春建筑学院高新校区）': '🏠 你楼下 · 味美生活可送到寝室',
+    '日新楼': '🚧 只送吉大校内 · 你点不了外卖，得走过去',
+    '吉大周边': '🚶 校外步行范围内',
+    '长春必吃榜': '🚇 得坐车进城'
+  };
   var MEALS = ['早餐', '午餐', '晚餐', '夜宵'];
   var PRICES = ['便宜', '中等', '小贵'];
   var SCENES = ['单人', '两人', '多人'];
@@ -1390,6 +1397,8 @@
     } else if (loc !== '通用') {
       add('📍 ' + loc, 'dist');
     }
+    // 地点实地提示（不管有没有 SHOPMETA 都显示）
+    if (LOC_NOTE[loc]) add(LOC_NOTE[loc], 'qs');
     if (!curfewInfo().open) {
       if (loc === '吉吉大学后花园（长春建筑学院高新校区）') add('🚪 已封寝 · 只能点送到楼下的', null, true);
       else add('🚪 已封寝 · 这个在校外，去不了', null, true);
