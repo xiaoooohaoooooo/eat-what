@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>今天吃什么 v5.4 · 新增奢岭校区</title>
+<title>今天吃什么 v5.5</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -187,7 +187,7 @@
 <div class="bg"></div><div class="grid"></div>
 <div class="wrap">
   <header>
-    <div class="brand">今天吃什么 · v5.4</div>
+    <div class="brand">今天吃什么 · v5.5</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -341,10 +341,9 @@
   // 每个地点的「实地提示」—— 写成对所有人都成立的客观事实（不写"你楼下"）
   // 这样吉大的学生拿去用也不会错
   var LOC_NOTE = {
-    '吉吉大学后花园（长春建筑学院高新校区）': '🏠 校内配送仅限长建',
-    '日新楼': '🚧 校内配送仅限吉大',
-    '吉大周边': '🚶 吉大南校周边',
-    '长春必吃榜': '🚇 市区 · 需坐车'
+    '吉吉大学后花园（长春建筑学院高新校区）': '校内配送仅限长建',
+    '日新楼': '校内配送仅限吉大',
+    '吉大周边': '吉大南校周边'
   };
   // 坐标锚点（WGS84 十进制）—— 由实测提供
   var ANCHOR = {
