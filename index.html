@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>今天吃什么 v5.7</title>
+<title>今天吃什么 v5.8</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -187,7 +187,7 @@
 <div class="bg"></div><div class="grid"></div>
 <div class="wrap">
   <header>
-    <div class="brand">今天吃什么 · v5.7</div>
+    <div class="brand">今天吃什么 · v5.8</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -327,7 +327,7 @@
 
   <footer>
     快捷键：<kbd>空格</kbd> 再抽一次　<kbd>Enter</kbd> 标记吃了　<kbd>Q</kbd> 楼下随便吃点<br>
-    <b>📏</b> 按你的定位算的直线距离　·　<b>📍</b> 参考距离（没定位时用）<br>评分徽章和标签都能改，只存你本机 ✎<br>
+    <b>📏</b> 按你的定位算的直线距离　·　<b>📍</b> 参考距离（没定位时用）<br>评分徽章和标签都能改，只存你本机 ✎　·　封寝时间点上方倒计时条就能改 ⏰<br>
     共 <span id="totalNum">0</span> 种吃法 · 数据存在本机 · 祝你不纠结，吃得香 🍚
   </footer>
 </div>
@@ -1443,7 +1443,39 @@
   var STAT_KEY = 'eat-what-stat-v1';
   var TAGOV_KEY = 'eat-what-tagov-v1';
   var RATEOV_KEY = 'eat-what-rateov-v1';
-  var CURFEW_H = 21, CURFEW_M = 30;   // 封寝时间
+  var CURFEW_KEY = 'eat-what-curfew-v1';
+  var CURFEW_DEF = { h: 21, m: 30 };        // 默认封寝时间
+  var curfew = { h: 21, m: 30 };            // 当前封寝时间（本机可改）
+  function pad2(x) { return (x < 10 ? '0' : '') + x; }
+  function loadCurfew() {
+    try {
+      var d = JSON.parse(localStorage.getItem(CURFEW_KEY) || 'null');
+      if (d && d.h >= 0 && d.h <= 23 && d.m >= 0 && d.m <= 59) curfew = { h: d.h, m: d.m };
+      else curfew = { h: CURFEW_DEF.h, m: CURFEW_DEF.m };
+    } catch (e) { curfew = { h: CURFEW_DEF.h, m: CURFEW_DEF.m }; }
+  }
+  function saveCurfew() { try { localStorage.setItem(CURFEW_KEY, JSON.stringify(curfew)); } catch (e) {} }
+  // 点封寝条就能改（留空 = 恢复默认）
+  function editCurfew() {
+    var cur = pad2(curfew.h) + ':' + pad2(curfew.m);
+    var v = prompt('你们几点封寝？（24 小时制，例 21:30）\n留空 = 恢复默认 21:30', cur);
+    if (v === null) return false;
+    v = String(v).trim().replace('：', ':');
+    if (v === '') {
+      curfew = { h: CURFEW_DEF.h, m: CURFEW_DEF.m };
+      saveCurfew(); renderCurfew();
+      toast('⏰ 已恢复默认 ' + pad2(curfew.h) + ':' + pad2(curfew.m));
+      return true;
+    }
+    var mm2 = v.match(/^(\d{1,2}):(\d{1,2})$/);
+    if (!mm2) { toast('❌ 格式要像 21:30'); return false; }
+    var hh = parseInt(mm2[1], 10), mi = parseInt(mm2[2], 10);
+    if (hh > 23 || mi > 59) { toast('❌ 时间不合法（小时 0-23 / 分钟 0-59）'); return false; }
+    curfew = { h: hh, m: mi };
+    saveCurfew(); renderCurfew();
+    toast('⏰ 封寝时间已设为 ' + pad2(hh) + ':' + pad2(mi) + '（只存你本机）');
+    return true;
+  }
   var el = function (id) { return document.getElementById(id); };
   var custom = [];    // 自己加的店
   var stats = {};     // { 店名: { c: 抽到次数, e: 吃过次数, last: 时间戳 } }
@@ -1765,17 +1797,20 @@
   // ---------- 封寝倒计时 ----------
   function curfewInfo() {
     var now = new Date();
-    var end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), CURFEW_H, CURFEW_M, 0, 0);
+    var end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), curfew.h, curfew.m, 0, 0);
     var open = now.getTime() < end.getTime();
     var mins = Math.floor(Math.abs(end.getTime() - now.getTime()) / 60000);
     return { open: open, mins: mins };
   }
   function renderCurfew() {
     var box = el('curfew'); if (!box) return;
+    box.style.cursor = 'pointer';
+    box.title = '点这里改封寝时间（只存你本机）';
+    box.onclick = function () { editCurfew(); };
     var c = curfewInfo();
     if (c.open) {
       var h = Math.floor(c.mins / 60), m = c.mins % 60;
-      var txt = '⏰ 距 ' + CURFEW_H + ':' + (CURFEW_M < 10 ? '0' : '') + CURFEW_M + ' 封寝还有 ' +
+      var txt = '⏰ 距 ' + pad2(curfew.h) + ':' + pad2(curfew.m) + ' 封寝还有 ' +
         (h ? h + ' 小时 ' : '') + m + ' 分钟';
       if (c.mins <= 90) { box.className = 'curfew warn'; txt += ' · 别点远的了！'; }
       else { box.className = 'curfew calm'; txt += ' · 慢慢挑'; }
@@ -2336,7 +2371,7 @@
     window.addEventListener(ev, function once() { ensureAudio(); if (ac && ac.state === 'suspended') ac.resume(); }, { once: true });
   });
 
-  loadMine(); loadStat(); loadTagOv(); loadRateOv(); loadGeo(); load();
+  loadMine(); loadStat(); loadTagOv(); loadRateOv(); loadGeo(); loadCurfew(); load();
   buildMineForm(); buildChips(); refresh(); renderHist(); renderMine(); renderTagList(); renderStats();
   renderCurfew();
   setInterval(renderCurfew, 30000);
