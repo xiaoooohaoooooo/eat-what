@@ -2,8 +2,17 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>今天吃什么 v5.8</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#140a06">
+<meta name="description" content="565 种吃法，按地点/预算/评分抽一个，别再纠结了">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="吃什么">
+<title>今天吃什么 v6.0</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -181,13 +190,43 @@
     font-size:12.5px;font-weight:700;color:var(--text);opacity:0;pointer-events:none;transition:all .28s;
     box-shadow:0 10px 34px rgba(0,0,0,.6);max-width:88vw;text-align:center}
   #toast.on{opacity:1;transform:translate(-50%,0)}
+  .duelgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+  .duelcard{border:1px solid rgba(255,140,43,.32);border-radius:12px;padding:11px 9px;cursor:pointer;
+    background:rgba(255,140,43,.06);text-align:center;transition:.15s;user-select:none}
+  .duelcard:hover,.duelcard:active{border-color:rgba(255,209,102,.75);background:rgba(255,209,102,.12);transform:translateY(-2px)}
+  .duelcard .dn{font-size:14px;font-weight:700;line-height:1.3;word-break:break-all}
+  .duelcard .dt{font-size:10.5px;opacity:.62;margin-top:4px}
+  .duelcard .db{font-size:10px;opacity:.55;margin-top:3px}
+  .dueltip{font-size:10.5px;opacity:.62;text-align:center;margin-top:8px}
+  .duelacts{display:flex;gap:7px;margin-top:9px}
+  .duelacts button{flex:1}
+  .achv{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin-top:10px}
+  .ac{border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:9px 8px;text-align:center;
+    background:rgba(255,255,255,.04);position:relative;transition:.2s}
+  .ac .e{font-size:20px;line-height:1.3;filter:grayscale(1);opacity:.35}
+  .ac .n{font-size:11px;font-weight:600;margin-top:2px;opacity:.6}
+  .ac .p{font-size:9.5px;opacity:.45;margin-top:1px}
+  .ac .d{font-size:9.5px;opacity:.5;margin-top:3px;line-height:1.35}
+  .ac.on{border-color:rgba(255,209,102,.55);background:linear-gradient(160deg,rgba(255,209,102,.14),rgba(255,209,102,.04));
+    box-shadow:0 0 14px rgba(255,209,102,.18)}
+  .ac.on .e{filter:none;opacity:1}
+  .ac.on .n{opacity:1;color:#ffd166}
+  .ac.on .p{opacity:.8;color:#ffd166}
+  .ac.on::after{content:"✓";position:absolute;top:4px;right:6px;font-size:10px;color:#ffd166}
+  .achvbar{height:5px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:5px}
+  .achvbar i{display:block;height:100%;background:linear-gradient(90deg,#203170,#ffd166);border-radius:3px}
+  .bakbox{width:100%;box-sizing:border-box;height:74px;margin-top:9px;padding:9px;border-radius:10px;
+    border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.28);color:#c0a08a;
+    font-size:10.5px;line-height:1.5;font-family:ui-monospace,Consolas,monospace;resize:vertical;word-break:break-all}
+  .bakacts{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+  .bakacts button{flex:1;min-width:96px}
 </style>
 </head>
 <body>
 <div class="bg"></div><div class="grid"></div>
 <div class="wrap">
   <header>
-    <div class="brand">今天吃什么 · v5.8</div>
+    <div class="brand">今天吃什么 · v6.0</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -325,7 +364,30 @@
     <div class="hint" id="mineHint"></div>
   </div>
 
-  <footer>
+    <div class="card">
+    <h2>📦 备份 <span class="cnt">换手机 / 清缓存前必看</span></h2>
+    <div class="hint">你改过的标签、评分、封寝时间、战绩、自建店铺，<b>全都只存在这台设备上</b>。
+      清缓存、换浏览器、换手机 —— <b>就没了</b>。导出一次，存到微信收藏里。</div>
+    <div class="bakacts">
+      <button id="expBtn">📤 导出备份</button>
+      <button id="copyBtn">📋 复制</button>
+      <button id="impBtn">📥 导入备份</button>
+    </div>
+    <textarea class="bakbox" id="bakBox" placeholder="点「导出备份」后，这一串代码会出现在这里&#10;换设备时：把备份代码粘进来 → 点「导入备份」"></textarea>
+    <div class="hint" id="bakHint"></div>
+  </div>
+  <div class="card">
+    <h2>🏆 成就 <span class="cnt" id="achvCnt"></span></h2>
+    <div class="hint">吃出来的。标记「吃过」才会算数 😌</div>
+    <div class="achv" id="achvList"></div>
+  </div>
+  <div class="card">
+    <h2>🥊 二选一淘汰赛 <span class="cnt">选不出来就用这个</span></h2>
+    <div class="hint">两个里选一个，赢的留下继续打。什么时候觉得「行，就它了」，点下面那个按钮。</div>
+    <div class="acts" id="duelStartWrap"><button class="hot" id="duelStart">🥊 开始对战</button></div>
+    <div id="duelBox"></div>
+  </div>
+<footer>
     快捷键：<kbd>空格</kbd> 再抽一次　<kbd>Enter</kbd> 标记吃了　<kbd>Q</kbd> 楼下随便吃点<br>
     <b>📏</b> 按你的定位算的直线距离　·　<b>📍</b> 参考距离（没定位时用）<br>评分徽章和标签都能改，只存你本机 ✎　·　封寝时间点上方倒计时条就能改 ⏰<br>
     共 <span id="totalNum">0</span> 种吃法 · 数据存在本机 · 祝你不纠结，吃得香 🍚
@@ -1766,6 +1828,70 @@
     }
     requestAnimationFrame(frame);
   }
+  // ------------------------------------------------ 🥊 二选一淘汰赛（v6.0）
+  var duelA = null, duelB = null, duelRound = 0, duelOut = 0;
+  function duelOne(exA, exB) {
+    var t = null, guard = 0;
+    do { t = pick(); guard++; } while (t && guard < 40 && ((exA && t.n === exA.n) || (exB && t.n === exB.n)));
+    return t;
+  }
+  function duelCard(f, side) {
+    var m = metaOf(f);
+    var loc = f.loc || '通用';
+    var extra = '';
+    if (m && m.r) extra += '⭐ ' + m.r.toFixed(1) + '　';
+    if (loc !== '通用') extra += loc;
+    return '<div class="duelcard" data-side="' + side + '">' +
+      '<div class="dn">' + esc(f.n) + '</div>' +
+      '<div class="dt">' + esc(f.t) + ' · ' + esc(f.p) + '</div>' +
+      ('<div class="db">' + extra + '</div>') +
+      '<div class="db">' + esc(f.c || '') + '</div>' +
+      '</div>';
+  }
+  function duelRender() {
+    var box = el('duelBox'); if (!box) return;
+    if (!duelA || !duelB) { box.innerHTML = ''; return; }
+    box.innerHTML =
+      '<div class="duelgrid">' + duelCard(duelA, 'a') + duelCard(duelB, 'b') + '</div>' +
+      '<div class="dueltip">点你想吃的那一个 · 第 ' + (duelRound + 1) + ' 轮 · 已淘汰 ' + duelOut + ' 个</div>' +
+      '<div class="duelacts"><button id="duelYes">✅ 就吃它了（当前左边那个）</button></div>';
+    [].slice.call(box.querySelectorAll('.duelcard')).forEach(function (c) {
+      c.onclick = function () { duelChoose(c.dataset.side); };
+    });
+    var yes = el('duelYes');
+    if (yes) yes.onclick = function () { duelAccept(); };
+  }
+  function duelStart() {
+    var a = duelOne(null, null);
+    var b = duelOne(a, null);
+    if (!a || !b) { toast('池子里不够两个，放宽点筛选条件'); return; }
+    duelA = a; duelB = b; duelRound = 0; duelOut = 0;
+    duelRender();
+    var wrap = el('duelBox');
+    if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    sfxSoft();
+  }
+  // side='a' 表示用户选了左边 → 左边留下，右边换人
+  function duelChoose(side) {
+    if (!duelA || !duelB) return;
+    var keep = side === 'a' ? duelA : duelB;
+    var drop = side === 'a' ? duelB : duelA;
+    var next = duelOne(keep, null);
+    if (!next) { toast('没别的能换了，直接点「就吃它」吧'); return; }
+    duelA = keep; duelB = next;
+    duelRound++; duelOut++;
+    duelRender();
+    sfxTick();
+  }
+  function duelAccept() {
+    if (!duelA) { toast('先点「开始对战」'); return; }
+    var w = duelA;
+    duelA = null; duelB = null;
+    el('duelBox').innerHTML = '';
+    el('stage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(function () { show(w); toast('🥊 擂台冠军：' + w.n); }, 380);
+  }
+
   function show(f) {
     state.current = f;
     el('food').textContent = f.n;
@@ -1788,7 +1914,7 @@
     state.hist.unshift({ n: f.n, t: Date.now(), eaten: false });
     if (state.hist.length > 40) state.hist.pop();
     bumpStat(f.n, false);
-    save(); renderHist(); refresh(); renderStats(); syncEatenBtn();
+    save(); renderHist(); refresh(); renderStats(); renderAchv(); syncEatenBtn();
     state.rolling = false;
     el('draw').disabled = false; el('eaten').disabled = false;
     if (pendingDone) { var cb = pendingDone; pendingDone = null; setTimeout(cb, 250); }
@@ -1908,6 +2034,8 @@
     stats[name].c++;
     if (eaten) stats[name].e++;
     stats[name].last = Date.now();
+    markToday();
+    saveStat();
   }
   function saveStat() { try { localStorage.setItem(STAT_KEY, JSON.stringify(stats)); } catch (e) {} }
   function renderStats() {
@@ -1973,7 +2101,7 @@
       box.appendChild(d);
     });
     out.forEach(function (f) { bumpStat(f.n, false); });
-    saveStat(); renderStats(); sfxHit();
+    saveStat(); renderStats(); renderAchv(); sfxHit();
     if (navigator.vibrate) { try { navigator.vibrate([18, 40, 18]); } catch (e) {} }
     toast('🎡 抽了 ' + out.length + ' 个不重样的，一人一个');
     el('partyCard') && el('partyCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2307,6 +2435,7 @@
   }
 
   el('draw').onclick = function () { roll(); };
+  el('duelStart').onclick = function () { ensureAudio(); duelStart(); };
   el('eaten').onclick = function () {
     if (!state.current) { toast('先抽一个再标记呀'); return; }
     var h = findHist(state.current.n);
@@ -2371,7 +2500,185 @@
     window.addEventListener(ev, function once() { ensureAudio(); if (ac && ac.state === 'suspended') ac.resume(); }, { once: true });
   });
 
-  loadMine(); loadStat(); loadTagOv(); loadRateOv(); loadGeo(); loadCurfew(); load();
+  // ------------------------------------------------ 🏆 成就（v6.0）
+  var DAYS_KEY = 'eat-what-days-v1';
+  var days = [];
+  function loadDays() {
+    try { var d = JSON.parse(localStorage.getItem(DAYS_KEY) || '[]'); days = Array.isArray(d) ? d.filter(function (x) { return typeof x === 'string'; }) : []; }
+    catch (e) { days = []; }
+  }
+  function saveDays() { try { localStorage.setItem(DAYS_KEY, JSON.stringify(days.slice(-400))); } catch (e) {} }
+  function dayStr(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+  function markToday() {
+    var t = dayStr(new Date());
+    if (days.indexOf(t) < 0) { days.push(t); days.sort(); saveDays(); }
+  }
+  // 连续使用天数（今天没用过就从昨天往上数）
+  function streakOf() {
+    if (!days.length) return 0;
+    var set = {}; days.forEach(function (x) { set[x] = 1; });
+    var cur = new Date();
+    if (!set[dayStr(cur)]) cur.setDate(cur.getDate() - 1);
+    var k = 0;
+    while (set[dayStr(cur)] && k < 400) { k++; cur.setDate(cur.getDate() - 1); }
+    return k;
+  }
+  // 把战绩折算成成就需要的数字
+  function achvStats() {
+    var s = { rolls: 0, eats: 0, bcb: 0, byLoc: {}, far: 0, locDone: {} };
+    var named = {};
+    FOODS.concat(custom).forEach(function (f) { named[f.n] = f; });
+    Object.keys(stats).forEach(function (k) {
+      var st = stats[k]; if (!st) return;
+      s.rolls += st.c || 0; s.eats += st.e || 0;
+      if ((st.e || 0) > 0) {
+        var f = named[k];
+        if (f) {
+          var loc = f.loc || '通用';
+          s.byLoc[loc] = (s.byLoc[loc] || 0) + st.e;
+          s.locDone[loc] = 1;
+          if (loc === '长春必吃榜') s.bcb += st.e;
+          var meta = SHOPMETA[k];
+          if (meta && meta.d >= 3000) s.far += st.e;
+        }
+      }
+    });
+    s.streak = streakOf();
+    s.mine = custom.length;
+    s.rateOv = Object.keys(rateOv).length;
+    s.tagOv = Object.keys(tagOv).length;
+    s.locs = Object.keys(s.locDone).filter(function (l) { return l !== '通用'; }).length;
+    return s;
+  }
+  var ACHV = [
+    { e: '🍚', n: '第一次决定',   d: '抽一次',          goal: 1,   get: function (s) { return s.rolls; } },
+    { e: '🎯', n: '抽签达人',     d: '累计抽 50 次',   goal: 50,  get: function (s) { return s.rolls; } },
+    { e: '🎰', n: '选择困难症',   d: '累计抽 200 次',  goal: 200, get: function (s) { return s.rolls; } },
+    { e: '🍽️', n: '开张大吉',     d: '标记吃过 10 次', goal: 10,  get: function (s) { return s.eats; } },
+    { e: '🥢', n: '干饭人',       d: '标记吃过 50 次', goal: 50,  get: function (s) { return s.eats; } },
+    { e: '📅', n: '三日之约',     d: '连续用 3 天',    goal: 3,   get: function (s) { return s.streak; } },
+    { e: '🔥', n: '一周不重样',   d: '连续用 7 天',    goal: 7,   get: function (s) { return s.streak; } },
+    { e: '🏔️', n: '一个月',       d: '连续用 30 天',   goal: 30,  get: function (s) { return s.streak; } },
+    { e: '🏅', n: '必吃榜入门',   d: '吃过 5 家必吃榜', goal: 5,   get: function (s) { return s.bcb; } },
+    { e: '🥇', n: '必吃榜进阶',   d: '吃过 15 家',     goal: 15,  get: function (s) { return s.bcb; } },
+    { e: '👑', n: '必吃榜制霸',   d: '吃遍 47 家',     goal: 47,  get: function (s) { return s.bcb; } },
+    { e: '🏠', n: '楼下常客',     d: '吃 5 家楼下',    goal: 5,   get: function (s) { return s.byLoc['长春建筑学院高新校区'] || 0; } },
+    { e: '🏫', n: '奢岭远征',     d: '吃 10 家奢岭',   goal: 10,  get: function (s) { return s.byLoc['长春建筑学院奢岭校区'] || 0; } },
+    { e: '🚶', n: '不嫌远',       d: '吃 3 家 3km 外', goal: 3,   get: function (s) { return s.far; } },
+    { e: '🌏', n: '六边形战士',   d: '每个地点都吃过', goal: 5,   get: function (s) { return s.locs; } },
+    { e: '✍️', n: '自己动手',     d: '加过 1 家店',    goal: 1,   get: function (s) { return s.mine; } },
+    { e: '⭐', n: '评分官',       d: '改过 10 个评分', goal: 10,  get: function (s) { return s.rateOv; } },
+    { e: '🏷️', n: '标签编辑',     d: '改过 10 个标签', goal: 10,  get: function (s) { return s.tagOv; } },
+    { e: '⏰', n: '知时而动',     d: '设过封寝时间',   goal: 1,   get: function (s) { return localStorage.getItem(CURFEW_KEY) ? 1 : 0; } },
+    { e: '📦', n: '有备无患',     d: '导出过备份',     goal: 1,   get: function () { return localStorage.getItem('eat-what-baked-v1') ? 1 : 0; } },
+  ];
+  function renderAchv() {
+    var box = el('achvList'); if (!box) return;
+    var s = achvStats();
+    var done = 0;
+    box.innerHTML = '';
+    ACHV.forEach(function (a) {
+      var v = 0; try { v = a.get(s) || 0; } catch (e) { v = 0; }
+      var on = v >= a.goal;
+      if (on) done++;
+      var pct = Math.min(100, Math.round(v / a.goal * 100));
+      var d = document.createElement('div');
+      d.className = 'ac' + (on ? ' on' : '');
+      d.title = a.n + ' — ' + a.d + '（' + Math.min(v, a.goal) + '/' + a.goal + '）';
+      d.innerHTML = '<div class="e">' + a.e + '</div><div class="n">' + a.n + '</div>' +
+        '<div class="p">' + (on ? '已解锁' : Math.min(v, a.goal) + '/' + a.goal) + '</div>' +
+        (on ? '' : '<div class="achvbar"><i style="width:' + pct + '%"></i></div>') +
+        '<div class="d">' + a.d + '</div>';
+      box.appendChild(d);
+    });
+    if (el('achvCnt')) el('achvCnt').textContent = '已解锁 ' + done + ' / ' + ACHV.length;
+  }
+
+  // ------------------------------------------------ 📦 备份（v6.0）
+  // 本机所有自定义数据都存在 localStorage，换设备会丢 —— 所以给个导出/导入
+  var BACKUP_KEYS = [
+    ['主状态', SAVE], ['自建店铺', MINE_KEY], ['战绩', STAT_KEY],
+    ['标签改动', TAGOV_KEY], ['评分改动', RATEOV_KEY], ['封寝时间', CURFEW_KEY], ['定位', GEO_KEY], ['使用天数', DAYS_KEY],
+  ];
+  function exportBackup() {
+    var o = { app: 'eat-what', v: 6, t: Date.now(), data: {} };
+    var cnt = 0;
+    BACKUP_KEYS.forEach(function (k) {
+      try { var v = localStorage.getItem(k[1]); if (v !== null && v !== '') { o.data[k[1]] = v; cnt++; } } catch (e) {}
+    });
+    var s = JSON.stringify(o);
+    el('bakBox').value = s;
+    var box = el('bakBox');
+    box.focus(); box.select();
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch (e) {}
+    // 顺手下载一份文件（手机上更好用）
+    try {
+      var blob = new Blob([s], { type: 'application/json' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = '今天吃什么-备份-' + new Date().toISOString().slice(0, 10) + '.json';
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1200);
+    } catch (e) {}
+    try { localStorage.setItem('eat-what-baked-v1', '1'); } catch (e) {}
+    el('bakHint').innerHTML = '共 <b>' + cnt + '</b> 项 · ' + (s.length / 1024).toFixed(1) + ' KB ' +
+      (copied ? '· <b>已复制到剪贴板</b>' : '· 请手动复制下面那串') + ' · 已同时下载一份文件';
+    toast(copied ? '📤 已导出并复制到剪贴板' : '📤 已导出 · 请手动复制');
+  }
+  function copyBackup() {
+    var box = el('bakBox');
+    if (!box.value) { toast('先点「导出备份」'); return; }
+    box.focus(); box.select();
+    var ok2 = false;
+    try { ok2 = document.execCommand('copy'); } catch (e) {}
+    toast(ok2 ? '📋 已复制' : '❌ 复制失败，请长按手动复制');
+  }
+  function importBackup() {
+    var s = (el('bakBox').value || '').trim();
+    if (!s) {
+      var v = prompt('把备份代码粘到这里：');
+      if (v === null) return;
+      s = String(v).trim();
+    }
+    if (!s) { toast('没有内容可导入'); return; }
+    var o;
+    try { o = JSON.parse(s); } catch (e) { toast('❌ 这串代码不合法（不是完整 JSON）'); return; }
+    if (!o || o.app !== 'eat-what' || !o.data || typeof o.data !== 'object') { toast('❌ 这不是本 App 的备份'); return; }
+    var allowed = BACKUP_KEYS.map(function (x) { return x[1]; });
+    var keys = Object.keys(o.data).filter(function (k) { return allowed.indexOf(k) >= 0; });
+    if (!keys.length) { toast('⚠️ 备份里没有可导入的数据'); return; }
+    var when = o.t ? new Date(o.t).toLocaleString('zh-CN') : '未知时间';
+    if (!confirm('导入会用备份覆盖本机现在的数据！\n\n备份时间：' + when + '\n包含 ' + keys.length + ' 项\n\n确定导入吗？')) return;
+    var ok3 = 0;
+    keys.forEach(function (k) { try { localStorage.setItem(k, o.data[k]); ok3++; } catch (e) {} });
+    toast('📥 已导入 ' + ok3 + ' 项 · 正在生效…');
+    setTimeout(function () {
+      // 原地重载所有本机数据（比整页刷新体验好，也不会打断抽签）
+      try {
+        // PWA：注册 Service Worker（网络优先 + 离线回退），file:// 打开时自动跳过
+  try {
+    if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
+  } catch (e) {}
+
+  loadMine(); loadStat(); loadTagOv(); loadRateOv(); loadGeo(); loadCurfew(); loadDays(); load();
+  renderAchv();
+        renderTagList(); renderCurfew(); refresh(); renderStats();
+      } catch (e) {}
+      if (state.current) renderMeta(state.current);
+      toast('📥 导入完成 · ' + ok3 + ' 项已生效');
+    }, 600);
+  }
+  el('expBtn').onclick = function () { sfxSoft(); exportBackup(); };
+  el('copyBtn').onclick = function () { copyBackup(); };
+  el('impBtn').onclick = function () { importBackup(); };
+
+  loadMine(); loadStat(); loadTagOv(); loadRateOv(); loadGeo(); loadCurfew(); loadDays(); load();
+  renderAchv();
   buildMineForm(); buildChips(); refresh(); renderHist(); renderMine(); renderTagList(); renderStats();
   renderCurfew();
   setInterval(renderCurfew, 30000);
