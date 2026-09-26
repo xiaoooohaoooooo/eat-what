@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="吃什么">
-<title>今天吃什么 v6.2</title>
+<title>今天吃什么 v6.3</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -235,52 +235,55 @@
   .bakacts{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
   .bakacts button{flex:1;min-width:96px}
 
-  /* ================= 🚇 出行速查（v6.2） ================= */
-  .mtlist{display:flex;flex-direction:column;gap:6px;margin-top:10px}
-  .mtrow{border:1px solid rgba(255,140,43,.2);border-radius:12px;background:rgba(255,255,255,.035);
-    padding:9px 11px;cursor:pointer;transition:.15s}
-  .mtrow:active{background:rgba(255,140,43,.14)}
-  .mtrow .mh{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:800}
-  .mtrow .mh .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .mtrow .mh .st{font-size:10.5px;color:var(--gold);font-weight:900;flex:none;
-    background:rgba(255,209,102,.14);border:1px solid rgba(255,209,102,.4);border-radius:999px;padding:2px 8px}
-  .mtrow .mh .ar{color:var(--dim);font-size:11px;flex:none;transition:transform .2s;opacity:.7}
-  .mtrow.on .mh .ar{transform:rotate(90deg)}
-  .mtrow .steps{display:none;margin-top:9px}
-  .mtrow.on .steps{display:block}
-  .mtseg{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.7;
-    color:var(--dim);margin-top:5px}
-  .mtseg .d{width:9px;height:9px;border-radius:50%;flex:none;margin-top:5px;box-shadow:0 0 0 3px rgba(255,255,255,.06)}
-  .mtseg b{color:var(--text)}
-  .mtseg .tt{flex:1}
-  .mttip{font-size:11px;line-height:1.7;color:var(--dim);opacity:.85;margin-top:8px;
-    padding-top:7px;border-top:1px dashed rgba(255,140,43,.22)}
-  .mtgo{display:flex;gap:6px;margin-top:9px}
-  .mtgo a{border:1px solid var(--line);background:rgba(255,140,43,.12);color:var(--text);
-    border-radius:9px;padding:7px 12px;font-size:11.5px;font-weight:800;text-decoration:none;flex:none}
-  .mtacts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
-  .mtacts button{flex:1 1 calc(50% - 4px);border:1px solid var(--line);background:rgba(255,255,255,.05);
-    color:var(--text);border-radius:11px;padding:11px 8px;font-size:12.5px;font-weight:800;
+  /* ================= 🚇 出行规划（v6.3） ================= */
+  .mtplan{display:flex;align-items:flex-end;gap:7px;margin-top:11px}
+  .mtplan .fr{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:4px}
+  .mtplan .lb{font-size:10px;letter-spacing:.18em;color:var(--dim);padding-left:2px}
+  .mtplan select{width:100%;border:1px solid var(--line);background-color:rgba(0,0,0,.34);
+    color:var(--text);border-radius:11px;padding:10px 28px 10px 10px;font-size:13.5px;
+    font-weight:700;font-family:inherit;min-width:0;cursor:pointer;
+    -webkit-appearance:none;appearance:none;
+    background-image:linear-gradient(45deg,transparent 50%,#c0a08a 50%),
+                     linear-gradient(135deg,#c0a08a 50%,transparent 50%);
+    background-position:calc(100% - 15px) calc(50% - 2px),calc(100% - 10px) calc(50% - 2px);
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .mtplan select:focus{outline:none;border-color:rgba(255,140,43,.85);
+    box-shadow:0 0 0 2px rgba(255,140,43,.18)}
+  .mtplan select option{background:#2a1408;color:#ffeee0;font-weight:700}
+  .mtplan select optgroup{background:#1b0d05;color:var(--org);font-weight:900;font-style:normal}
+  .mtswap{flex:none;width:42px;height:42px;border-radius:12px;border:1px solid var(--line);
+    background:rgba(255,140,43,.14);color:var(--text);font-size:16px;font-weight:900;
+    font-family:inherit;cursor:pointer;transition:transform .1s}
+  .mtswap:active{transform:scale(.92)}
+  .mtopts{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:11.5px;color:var(--dim)}
+  .mtopts label{display:flex;align-items:center;gap:7px;cursor:pointer;line-height:1.4}
+  .mtopts input{width:16px;height:16px;flex:none;accent-color:#ff8c2b;cursor:pointer}
+  .mtres{margin-top:10px}
+  .mtcard{border:1px solid rgba(255,140,43,.3);border-radius:13px;background:rgba(255,140,43,.07);
+    padding:11px 12px;margin-top:9px}
+  .mtcard.best{border-color:rgba(255,209,102,.6);background:rgba(255,209,102,.09)}
+  .mthead{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:900;
+    color:var(--gold);letter-spacing:.06em}
+  .mthead .sum{margin-left:auto;font-size:11.5px;color:var(--text);font-weight:800;letter-spacing:0}
+  .mtstep{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.62;
+    margin-top:9px;color:var(--dim)}
+  .mtstep .d{width:10px;height:10px;border-radius:50%;flex:none;margin-top:5px;
+    box-shadow:0 0 0 3px rgba(255,255,255,.07)}
+  .mtstep .d.x{width:9px;height:9px;background:transparent;border:2px dashed #c0a08a;
+    box-shadow:none;margin-top:4px}
+  .mtstep .tt{flex:1;min-width:0}
+  .mtstep .tt b{color:var(--text)}
+  .mtstep .tm{color:var(--gold);font-weight:800;font-size:10.5px;flex:none;margin-top:2px}
+  .mtend{margin-top:10px;font-size:11.5px;color:var(--green);font-weight:900}
+  .mtbad{font-size:12.5px;color:#ff9b9b;font-weight:700;margin-top:9px;line-height:1.6}
+  .mtwarn{font-size:11px;line-height:1.6;color:#ffcf9a;background:rgba(255,140,43,.13);
+    border:1px solid rgba(255,140,43,.35);border-radius:9px;padding:6px 9px;margin-top:7px}
+  .mtquick{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .mtquick button{border:1px solid rgba(255,140,43,.3);background:rgba(255,140,43,.1);
+    color:var(--text);border-radius:999px;padding:6px 11px;font-size:11.5px;font-weight:800;
     cursor:pointer;font-family:inherit;transition:.15s}
-  .mtacts button:active{transform:scale(.97)}
-  .mtacts button.hot{flex:1 1 100%;background:linear-gradient(96deg,rgba(255,140,43,.55),rgba(255,77,77,.4));
-    border-color:rgba(255,209,102,.75)}
-  .mtlines{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
-  .mtlines .ln{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;
-    padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16)}
-  .mtlines .ln i{width:9px;height:9px;border-radius:50%;display:block;flex:none}
-  .mtlines .ln.soon{opacity:.95;border-style:dashed}
-  .mtlines .ln small{font-weight:700;opacity:.72;font-size:10px}
-  .mtmk{display:flex;flex-direction:column;gap:5px;margin-top:10px}
-  .mtmk .r{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:7px 10px;border-radius:10px;
-    background:rgba(255,255,255,.035);border:1px solid rgba(255,140,43,.16)}
-  .mtmk .r .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .mtmk .r .dd{color:var(--gold);font-weight:800;font-size:11.5px;flex:none}
-  .mtmk .r.star{border-color:rgba(255,209,102,.6);background:rgba(255,209,102,.1)}
-  .mtmk .r.star .nm{font-weight:800}
-  #mtMkWrap{display:none}
-  #mtMkWrap.on{display:block}
-
+  .mtquick button:active{background:rgba(255,209,102,.26);border-color:rgba(255,209,102,.7)}
+  .mtquick .ttl{font-size:10.5px;color:var(--dim);align-self:center;letter-spacing:.1em}
   /* 全屏地铁图 */
   #mtView{position:fixed;inset:0;z-index:200;background:#07070a;display:none;
     touch-action:none;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
@@ -313,7 +316,7 @@
 <div class="bg"></div><div class="grid"></div>
 <div class="wrap">
   <header>
-    <div class="brand">今天吃什么 · v6.2</div>
+    <div class="brand">今天吃什么 · v6.3</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -476,13 +479,36 @@
   </div>
 
   <div class="card" id="cardMetro">
-    <h2>🚇 出行速查 <span class="cnt">从百花园站出发</span></h2>
-    <div class="hint">起点固定按 <b>6 号线 百花园站</b> 算 —— 离小食代 <b>504 m</b>。
-      点一行展开「坐几站、在哪换」。最后一行的全网图能双指放大。</div>
-    <div class="mtlist" id="mtList"></div>
+    <h2>🚇 出行规划 <span class="cnt">自己设起点和终点</span></h2>
+    <div class="hint">从哪到哪，我给你算<b>坐几站、在哪换、大概几分钟</b>，顺手告诉你<b>开往哪个方向</b>。
+      起点会记住，下次打开还是它。</div>
+
+    <div class="mtplan">
+      <div class="fr">
+        <span class="lb">从</span>
+        <select id="mtFrom" aria-label="出发站"></select>
+      </div>
+      <button class="mtswap" id="mtSwap" title="对调起点终点">⇅</button>
+      <div class="fr">
+        <span class="lb">到</span>
+        <select id="mtTo" aria-label="终点站"></select>
+      </div>
+    </div>
+
+    <div class="mtopts">
+      <label><input type="checkbox" id="mtL5"><span id="mtL5Txt">算上 5 号线</span></label>
+    </div>
+
     <div class="mtacts">
-      <button class="hot" id="mtMapBtn">🗺️ 看长春地铁全网图（可放大）</button>
-      <button id="mtMkBtn">🥟 早市 / 市场情报</button>
+      <button class="hot" id="mtGo">🚇 给我路线</button>
+    </div>
+
+    <div class="mtres" id="mtRes"></div>
+    <div class="mtquick" id="mtQuick"></div>
+
+    <div class="mtacts">
+      <button id="mtMapBtn">🗺️ 长春地铁全网图</button>
+      <button id="mtMkBtn">🥟 早市 / 市场</button>
     </div>
     <div id="mtMkWrap"><div class="mtmk" id="mtMk"></div></div>
     <div class="mtlines" id="mtLines"></div>
@@ -2829,7 +2855,7 @@
   <button data-go="cardBak">📦 备份</button>
 </nav>
 
-<!-- ================= 🚇 出行速查（v6.2） ================= -->
+<!-- ================= 🚇 出行规划（v6.3） ================= -->
 <div id="mtView">
   <div class="bar">
     <span class="ttl">长春轨道交通线网图</span>
@@ -2849,165 +2875,354 @@
 </div>
 
 <script>
-'use strict';
-/* ---------------- 🚇 出行速查 v6.2 ----------------
-   全部数据来源：长春轨道交通官方线网图 + 各线路车站表（2026-09）
-   起点固定为 6 号线「百花园站」（离小食代 504 m）                      */
+/* ---------------- 🚇 出行规划 v6.3 ----------------
+   数据：长春轨道交通 8 条线（官网 API + 官方线网图逐站核对）
+   起点/终点由用户自己选；起点记在本机
+   算法：mtSearch / mtBoth —— 与数据完全分离                        */
 (function () {
+  'use strict';
   var el = function (id) { return document.getElementById(id); };
 
-  // ---------- 线路配色（对着官方线网图取的） ----------
-  var LC = {
-    '1': '#e4002b', '2': '#0072bc', '3': '#00a651', '4': '#7b4ea3',
-    '5': '#b5a642', '6': '#e8639b', '7': '#9b4f96', '8': '#00a99d'
-  };
+  // ================= 线路数据 =================
+  var MT_LINES = {"1":{"c":"#e4002b","st":["北环城路","庆丰路","一匡街","长春站北","长春站","胜利公园","人民广场","解放大路","东北师大","工农广场","繁荣路","卫星广场","市政府","华庆路","红嘴子"]},"2":{"c":"#0072bc","st":["汽车公园","捷达大路","西湖","双丰","长春西站","兴隆堡","西环城路","和平大街","万福街","景阳广场","解放桥","建设广场","文化广场","解放大路","平阳街","南关","吉林大路","东盛大街","东环城路","长青","东方广场","哈尔滨大街","窦家沟","英俊大街","英凯大街","林溪大街","雾开河大街"]},"3":{"c":"#00a651","st":["伪满皇宫","东广场","长春站","芙蓉桥","西安桥","南昌路","朝阳桥","解放桥","湖西桥","宽平桥","抚松路","孟家屯","湖光路","电台街","前进西","前进大街","卫明街","卫光街","卫星广场","亚泰立交桥","伊通河","职业技术大学","吉林广电","会展中心","世纪广场","金鑫街","博硕路","金河街","农博园","净月潭公园","紫杉路","宝相街","滑雪场","长影世纪城"]},"4":{"c":"#7b4ea3","st":["长春站北","北亚泰大街","伪满皇宫","东大桥","东新路","吉林大路","公平路","海口路","浦东路","威海路","北海路","职业技术大学","世荣路","南环城路","宜盛街","天工路","福祉大路","天青路","天普路","前十里堡","天新路"]},"5":{"c":"#b5a642","open":"2026-09-28","st":["卓越大街","市委党校","顺达路","越达路","安新路","蔚山路","硅谷广场(吉大中心校区)","电台街","省委党校","南湖广场(吉大南湖校区)","长影旧址博物馆","红旗街","文化广场","同志街","人民广场","大经路","省妇儿中心","东大桥"],"closed":["长影旧址博物馆"]},"6":{"c":"#e8639b","st":["双丰","长春西站","腾跃街","支农大街","飞跃广场","欧亚卖场","光谷大街","硅谷广场(吉大中心校区)","百花园","市法院","兰桡湖公园","轨道集团","新明街","华庆路","南溪湿地公园","福祉大路","吴家店","亚泰足球基地","樱花街","聚业大街","省博物院","长影世纪城"]},"7":{"c":"#9b4f96","st":["汽车公园","西湖大路","兴安路","兴顺路","飞跃广场","第一汽车制造厂","孟家屯","辉南街","南湖广场(吉大南湖校区)","南湖公园","工农广场","省税务局","东岭南街","威海路","赛得广场","会展大街","中东大市场","岭东路","东环城路"]},"8":{"c":"#00a99d","st":["北环城路","一二三中学","小南","小城子街","北湖大桥","北湖公园","和安街","光机路","大学城路","地理所","奥林匹克公园","广通路"]}};
+  var MT_META = {"DISP":{"硅谷广场(吉大中心校区)":"硅谷广场","南湖广场(吉大南湖校区)":"南湖广场"},"WARN":{"东大桥":"东大桥是<b>出站换乘</b>（4 号线在高架、5 号线在地下），要先出站再重新买票进站"}};
+  var MT_TODAY = (function () {
+    var d = new Date();
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  })();
 
-  // ---------- 从百花园站出发的走法 ----------
-  var ROUTES = [
-    {
-      n: '东岭南街早市', st: '4+8 站 · 换 1 次', go: '东岭南街早市', addr: true,
-      steps: [
-        ['6', '6 号线 <b>百花园站</b> 上车（往 <b>双丰</b> 方向），坐 <b>4 站</b> → <b>飞跃广场站</b>'],
-        ['7', '站内换 <b>7 号线</b>（往 <b>东环城路</b> 方向），坐 <b>8 站</b> → <b>东岭南街站</b>'],
-        ['6', '出站走约 <b>100 m</b> 就是早市大门']
-      ],
-      tip: '约 40 分钟、几块钱。想 6 点前赶到还是打车（约 20 分钟 ¥24）。<br>' +
-        '<b>9/28 五号线开通后更短</b>：百花园 →(6号线 1 站)硅谷广场 →(5号线 3 站)南湖广场 →(7号线 4 站)东岭南街，共 8 站 2 换乘。'
-    },
-    {
-      n: '欧亚卖场', st: '3 站 · 直达',
-      steps: [['6', '6 号线 <b>百花园站</b> 上车（往 <b>双丰</b> 方向），坐 <b>3 站</b> → <b>欧亚卖场站</b>']],
-      tip: '约 7 分钟，全程地下、不换乘、不怕晒不怕下雨。'
-    },
-    {
-      n: '硅谷广场站（换 5 号线）', st: '1 站 · 9/28 起', 
-      steps: [
-        ['6', '6 号线 <b>百花园站</b> 上车，坐 <b>1 站</b> → <b>硅谷广场站</b>'],
-        ['5', '<b>9/28 07:58</b> 起换 <b>5 号线</b>：西向到卓越大街；东向经 南湖广场 → 文化广场 → 人民广场 → 亚泰大街 → 东大桥']
-      ],
-      tip: '五号线一通，百花园站基本就是「出门第一站」了 —— 红旗街、桂林路、人民广场全在这条线上。'
-    },
-    {
-      n: '飞跃广场站（换 7 号线）', st: '4 站',
-      steps: [['6', '6 号线 <b>百花园站</b> 上车（往 <b>双丰</b> 方向），坐 <b>4 站</b> → <b>飞跃广场站</b>']],
-      tip: '7 号线在这是往 南湖广场 / 工农广场 / 东岭南街 / 赛德广场 方向的入口。'
-    },
-    {
-      n: '华庆路站（换 1 号线进城）', st: '5 站 · 换 1 次',
-      steps: [
-        ['6', '6 号线 <b>百花园站</b> 上车（往 <b>长影世纪城</b> 方向），坐 <b>5 站</b> → <b>华庆路站</b>'],
-        ['1', '换 <b>1 号线</b>：北向 卫星广场 / 人民广场 / 长春站；南向 红嘴子']
-      ],
-      tip: '从宿舍进市中心基本走这条：6 号线 → 华庆路 → 1 号线。'
-    },
-    {
-      n: '长影世纪城', st: '13 站 · 直达',
-      steps: [['6', '6 号线 <b>百花园站</b> 上车（往 <b>长影世纪城</b> 方向），坐 <b>13 站</b> → 终点 <b>长影世纪城站</b>']],
-      tip: '6 号线东端终点，净月方向。旁边还有省博物院站（6 号线第 21 站）。'
+  var MT_HOP = 2.2, MT_XFER = 4.5;
+  var MT_COST = { time: { hop: 2.2, xfer: 4.5 }, few: { hop: 1, xfer: 1000 } };
+
+  function mtIsOpen(L) { var o = MT_LINES[L].open; return !o || MT_TODAY >= o; }
+  function openLabel(L) {
+    var d = MT_LINES[L].open;
+    return parseInt(d.slice(5, 7), 10) + '/' + parseInt(d.slice(8, 10), 10);
+  }
+  function disp(n) { return MT_META.DISP[n] || n; }
+  function mtClosed(n) {
+    for (var k in MT_LINES) {
+      var c = MT_LINES[k].closed;
+      if (c && c.indexOf(n) >= 0) return true;
     }
-  ];
+    return false;
+  }
 
-  // ---------- 早市 / 市场 ----------
-  var MARKETS = [
-    ['阳光乐购市集', '2.0 km', 0],
-    ['光耀农贸市场早市', '2.8 km', 0],
-    ['前进广场早晚市集', '2.8 km', 0],
-    ['陶然庭苑早市', '3.0 km', 0],
-    ['幸福农贸市场', '3.9 km', 0],
-    ['湖西路市场', '5.4 km', 0],
-    ['东岭南街早市', '7.1 km', 1]
-  ];
+  function mtBuild(enabled) {
+    var L = {}, idx = {}, k, i;
+    for (k in MT_LINES) {
+      if (!MT_LINES.hasOwnProperty(k)) continue;
+      if (enabled && !enabled[k]) continue;
+      L[k] = MT_LINES[k];
+      for (i = 0; i < MT_LINES[k].st.length; i++) {
+        var n = MT_LINES[k].st[i];
+        if (!idx[n]) idx[n] = [];
+        idx[n].push({ line: k, i: i });
+      }
+    }
+    return { lines: L, idx: idx };
+  }
 
-  var LINES = [
-    ['1', '已开通'], ['2', '已开通'], ['3', '已开通'], ['4', '已开通'],
-    ['5', '9/28 开通'], ['6', '已开通'], ['7', '8/26 开通'], ['8', '已开通']
-  ];
+  function mtSearch(G, from, to, prefer) {
+    var W = MT_COST[prefer] || MT_COST.time;
+    var dist = {}, prev = {}, seen = {}, order = [], i, k;
+    for (i = 0; i < G.idx[from].length; i++) {
+      k = G.idx[from][i].line + '|' + G.idx[from][i].i;
+      dist[k] = 0; prev[k] = null; order.push(k);
+    }
+    var endKey = null, guard = 0;
+    while (guard++ < 400000) {
+      var cur = null, curD = Infinity;
+      for (i = 0; i < order.length; i++) { k = order[i]; if (!seen[k] && dist[k] < curD) { curD = dist[k]; cur = k; } }
+      if (cur === null) break;
+      seen[cur] = 1;
+      var p = cur.split('|'), line = p[0], si = parseInt(p[1], 10);
+      var name = G.lines[line].st[si];
+      if (name === to) { endKey = cur; break; }
+      var cand = [si - 1, si + 1];
+      for (i = 0; i < 2; i++) {
+        var ni = cand[i];
+        if (ni < 0 || ni >= G.lines[line].st.length) continue;
+        var nk = line + '|' + ni, nd = curD + W.hop;
+        if (dist[nk] === undefined || nd < dist[nk]) { dist[nk] = nd; prev[nk] = { k: cur, kind: 'ride' }; order.push(nk); }
+      }
+      var here = G.idx[name] || [];
+      for (i = 0; i < here.length; i++) {
+        if (here[i].line === line) continue;
+        var tk = here[i].line + '|' + here[i].i, td = curD + W.xfer;
+        if (dist[tk] === undefined || td < dist[tk]) { dist[tk] = td; prev[tk] = { k: cur, kind: 'xfer' }; order.push(tk); }
+      }
+    }
+    if (!endKey) return null;
+    var edges = [], c = endKey;
+    while (prev[c]) { edges.push({ from: prev[c].k, to: c, kind: prev[c].kind }); c = prev[c].k; }
+    edges.reverse();
+    var segs = [], hops = 0, xfers = 0, xat = [];
+    for (i = 0; i < edges.length; i++) {
+      var e = edges[i];
+      if (e.kind === 'xfer') {
+        xfers++;
+        var nm = G.lines[e.from.split('|')[0]].st[parseInt(e.from.split('|')[1], 10)];
+        if (xat.indexOf(nm) < 0) xat.push(nm);
+        continue;
+      }
+      hops++;
+      var a = parseInt(e.from.split('|')[1], 10), b = parseInt(e.to.split('|')[1], 10);
+      var ln = e.from.split('|')[0], last = segs[segs.length - 1];
+      if (last && last.line === ln && last.to === a) { last.to = b; last.n++; }
+      else segs.push({ line: ln, from: a, to: b, n: 1 });
+    }
+    for (i = 0; i < segs.length; i++) {
+      var sg = segs[i], arr = G.lines[sg.line].st, up = sg.to > sg.from;
+      sg.dirName = disp(arr[up ? arr.length - 1 : 0]);
+      sg.boardName = disp(arr[sg.from]);
+      sg.alightName = disp(arr[sg.to]);
+    }
+    return {
+      ok: true, from: from, to: to, hops: hops, xfers: xfers, xat: xat,
+      min: Math.round(hops * MT_HOP + xfers * MT_XFER),
+      key: segs.map(function (s) { return s.line + s.boardName + '>' + s.alightName; }).join('/'),
+      segs: segs
+    };
+  }
 
-  // ---------- 高德 ----------
+  function mtPlan(G, from, to, prefer) {
+    if (!from || !to) return { err: '起点和终点都要选' };
+    if (from === to) return { err: '起点和终点是同一个站 🙂' };
+    if (mtClosed(from) || mtClosed(to)) return { err: '这个站暂缓开通，还没法上下车' };
+    if (!G.idx[from]) return { err: '「' + disp(from) + '」现在没有线路经过（可能是还没开通的线）' };
+    if (!G.idx[to]) return { err: '「' + disp(to) + '」现在没有线路经过（可能是还没开通的线）' };
+    var r = mtSearch(G, from, to, prefer || 'time');
+    if (!r) return { err: '这两站之间没找到连通的路线' };
+    return r;
+  }
+
+  function mtBoth(G, from, to) {
+    var a = mtPlan(G, from, to, 'time');
+    if (a.err) return { err: a.err };
+    var b = mtPlan(G, from, to, 'few'), list = [a];
+    if (!b.err && b.key !== a.key) list.push(b);
+    return { ok: true, list: list };
+  }
+
+  // ================= 状态 =================
+  var K_FROM = 'eat-what-metro-from-v1', K_TO = 'eat-what-metro-to-v1', K_L5 = 'eat-what-metro-l5-v1';
+  var HOME_DEFAULT = '百花园';
+  function ls(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+  function useL5() {
+    var v = ls(K_L5);
+    if (v === '1') return true;
+    if (v === '0') return false;
+    return mtIsOpen('5');
+  }
+  function graphNow() {
+    var on = {};
+    for (var k in MT_LINES) if (MT_LINES.hasOwnProperty(k)) on[k] = mtIsOpen(k) || (k === '5' && useL5());
+    return mtBuild(on);
+  }
+  function lineColor(L) { return (MT_LINES[L] && MT_LINES[L].c) || '#888'; }
+  function lineName(L) { return L + ' 号线'; }
+
+  // ================= 下拉框 =================
+  function allStationNames() {
+    var out = [];
+    for (var k in MT_LINES) {
+      if (!MT_LINES.hasOwnProperty(k)) continue;
+      var cl = MT_LINES[k].closed || [];
+      for (var i = 0; i < MT_LINES[k].st.length; i++) {
+        var n = MT_LINES[k].st[i];
+        if (cl.indexOf(n) >= 0) continue;
+        if (out.indexOf(n) < 0) out.push(n);
+      }
+    }
+    return out;
+  }
+
+  function fillSelect(sel, want) {
+    if (!sel) return false;
+    var h = '', i, k, m;
+    for (k in MT_LINES) {
+      if (!MT_LINES.hasOwnProperty(k)) continue;
+      var arr = MT_LINES[k].st, cl = MT_LINES[k].closed || [];
+      var open = mtIsOpen(k) || (k === '5' && useL5());
+      h += '<optgroup label="' + lineName(k) + (open ? '' : '（' + openLabel(k) + ' 通车）') + '">';
+      for (i = 0; i < arr.length; i++) {
+        var n = arr[i];
+        if (cl.indexOf(n) >= 0) continue;
+        var idxs = [];
+        for (m in MT_LINES) if (MT_LINES[m].st.indexOf(n) >= 0) idxs.push(m);
+        var mark = idxs.length > 1 ? '（换 ' + idxs.join('/') + '）' : '';
+        h += '<option value="' + n + '">' + disp(n) + mark + (open ? '' : ' 🚧') + '</option>';
+      }
+      h += '</optgroup>';
+    }
+    sel.innerHTML = h;
+    var found = false;
+    for (i = 0; i < sel.options.length; i++) if (sel.options[i].value === want) { sel.selectedIndex = i; found = true; break; }
+    return found;
+  }
+
+  // ================= 渲染 =================
   function amapSearch(name) {
-    return 'https://uri.amap.com/search?keyword=' + encodeURIComponent(String(name) + ' 长春') +
+    return 'https://uri.amap.com/search?keyword=' + encodeURIComponent(String(name) + ' 地铁站 长春') +
       '&city=' + encodeURIComponent('长春') + '&view=map&callnative=1&src=dsh-eat-what';
   }
-  // 东岭南街早市实测坐标
-  var AMAP_MARKET = 'https://uri.amap.com/marker?position=125.34861,43.852638&name=' +
-    encodeURIComponent('东岭南街早市') + '&src=dsh-eat-what&callnative=1';
 
-  // ---------- 渲染列表 ----------
-  function renderRoutes() {
-    var box = el('mtList');
+  function renderPlan(res) {
+    var box = el('mtRes');
     if (!box) return;
-    var h = '';
-    for (var i = 0; i < ROUTES.length; i++) {
-      var r = ROUTES[i];
-      h += '<div class="mtrow" data-i="' + i + '">';
-      h += '<div class="mh"><span class="nm">' + r.n + '</span><span class="st">' + r.st +
-        '</span><span class="ar">▶</span></div>';
-      h += '<div class="steps">';
-      for (var j = 0; j < r.steps.length; j++) {
-        var s = r.steps[j];
-        h += '<div class="mtseg"><i class="d" style="background:' + (LC[s[0]] || '#888') + '"></i>' +
-          '<span class="tt">' + s[1] + '</span></div>';
+    if (res.err) { box.innerHTML = '<div class="mtbad">😵 ' + res.err + '</div>'; return; }
+    var h = '', i, j;
+    for (i = 0; i < res.list.length; i++) {
+      var r = res.list[i];
+      var tag = res.list.length > 1 ? (i === 0 ? '⚡ 最快' : '🧘 最少换乘') : '🚇 路线';
+      h += '<div class="mtcard' + (i === 0 ? ' best' : '') + '">';
+      h += '<div class="mthead">' + tag + '<span class="sum">' + r.hops + ' 站 · 换 ' + r.xfers +
+        ' 次 · ≈' + r.min + ' 分</span></div>';
+      for (j = 0; j < r.segs.length; j++) {
+        var g = r.segs[j];
+        if (j > 0) {
+          h += '<div class="mtstep"><i class="d x"></i><span class="tt">在 <b>' + g.boardName +
+            '</b> 站内换乘 <b>' + lineName(g.line) + '</b></span></div>';
+          var w = MT_META.WARN[g.boardName];
+          if (w) h += '<div class="mtwarn">⚠️ ' + w + '</div>';
+        }
+        h += '<div class="mtstep"><i class="d" style="background:' + lineColor(g.line) + '"></i>' +
+          '<span class="tt"><b>' + lineName(g.line) + '</b> · ' + g.boardName + ' 上车<br>' +
+          '开往 <b>' + g.dirName + '</b> 方向，坐 <b>' + g.n + ' 站</b> → ' + g.alightName + ' 下车</span>' +
+          '<span class="tm">≈' + Math.round(g.n * MT_HOP) + '′</span></div>';
       }
-      if (r.tip) h += '<div class="mttip">' + r.tip + '</div>';
-      h += '<div class="mtgo"><a href="' + (r.addr ? AMAP_MARKET : amapSearch(r.go || r.n)) +
-        '" target="_blank" rel="noopener noreferrer">🗺️ 高德搜这个点</a></div>';
-      h += '</div></div>';
+      h += '<div class="mtend">🏁 ' + disp(r.to) + '：' + r.hops + ' 站 · 换 ' + r.xfers + ' 次 · 约 ' + r.min + ' 分钟</div>';
+      h += '<div class="mtgo"><a href="' + amapSearch(r.to) +
+        '" target="_blank" rel="noopener noreferrer">🗺️ 高德搜终点</a></div>';
+      h += '</div>';
     }
     box.innerHTML = h;
-    box.addEventListener('click', function (e) {
-      var row = e.target.closest ? e.target.closest('.mtrow') : null;
-      if (!row) return;
-      if (e.target.closest('a')) return;          // 点导航链接不折叠
-      row.classList.toggle('on');
-    });
   }
 
+  // ================= 交互 =================
+  function planNow() {
+    var from = el('mtFrom') ? el('mtFrom').value : '';
+    var to = el('mtTo') ? el('mtTo').value : '';
+    lsSet(K_FROM, from); lsSet(K_TO, to);
+    var res = mtBoth(graphNow(), from, to);
+    renderPlan(res);
+    return res;
+  }
+
+  function initPlanner() {
+    var selFrom = el('mtFrom'), selTo = el('mtTo');
+    if (!selFrom || !selTo) return;
+
+    var f0 = ls(K_FROM) || HOME_DEFAULT;
+    if (!fillSelect(selFrom, f0)) fillSelect(selFrom, '百花园');
+    var t0 = ls(K_TO) || '东岭南街';
+    if (!fillSelect(selTo, t0)) fillSelect(selTo, '欧亚卖场');
+
+    var cb = el('mtL5'), txt = el('mtL5Txt');
+    if (cb) {
+      cb.checked = useL5();
+      if (txt) txt.textContent = mtIsOpen('5')
+        ? '算上 5 号线（已开通）'
+        : '提前按 5 号线已开通算（' + openLabel('5') + ' 才通车）';
+      cb.addEventListener('change', function () {
+        lsSet(K_L5, cb.checked ? '1' : '0');
+        var f = selFrom.value, t = selTo.value;
+        fillSelect(selFrom, f); fillSelect(selTo, t);
+        planNow();
+      });
+    }
+
+    var sw = el('mtSwap');
+    if (sw) sw.addEventListener('click', function () {
+      var a = selFrom.value; selFrom.value = selTo.value; selTo.value = a;
+      planNow();
+    });
+    var go = el('mtGo');
+    if (go) go.addEventListener('click', function () { planNow(); });
+    selFrom.addEventListener('change', function () { planNow(); });
+    selTo.addEventListener('change', function () { planNow(); });
+
+    var q = el('mtQuick');
+    if (q) {
+      var QUICK = ['东岭南街', '欧亚卖场', '长影世纪城', '长春站', '人民广场', '南湖公园',
+        '净月潭公园', '红旗街', '省博物院', '这有山'];
+      var names = allStationNames(), h = '<span class="ttl">一键：</span>', i;
+      for (i = 0; i < QUICK.length; i++) {
+        if (names.indexOf(QUICK[i]) < 0) continue;
+        h += '<button data-to="' + QUICK[i] + '">' + disp(QUICK[i]) + '</button>';
+      }
+      h += '<button data-to="__swap__">⇅ 反过来走</button>';
+      q.innerHTML = h;
+      q.addEventListener('click', function (e) {
+        var b = e.target.closest ? e.target.closest('button[data-to]') : null;
+        if (!b) return;
+        var v = b.getAttribute('data-to');
+        if (v === '__swap__') { var a = selFrom.value; selFrom.value = selTo.value; selTo.value = a; }
+        else selTo.value = v;
+        planNow();
+      });
+    }
+    planNow();
+  }
+
+  // ================= 线路徽章 / 换乘站说明 =================
   function renderLines() {
-    var box = el('mtLines');
-    if (!box) return;
-    if (!box.getAttribute('data-done')) {
+    var box = el('mtLines'), f = el('mtFoot'), k;
+    if (box) {
       var h = '';
-      for (var i = 0; i < LINES.length; i++) {
-        var L = LINES[i];
-        h += '<span class="ln' + (L[1].indexOf('开通') === 0 && L[1] !== '已开通' ? ' soon' : '') + '">' +
-          '<i style="background:' + LC[L[0]] + '"></i>' + L[0] + ' 号线 <small>' + L[1] + '</small></span>';
+      for (k in MT_LINES) {
+        if (!MT_LINES.hasOwnProperty(k)) continue;
+        var open = mtIsOpen(k);
+        h += '<span class="ln' + (open ? '' : ' soon') + '"><i style="background:' + MT_LINES[k].c + '"></i>' +
+          lineName(k) + ' <small>' + (open ? MT_LINES[k].st.length + ' 站' :
+            openLabel(k) + ' 通车') + '</small></span>';
       }
       box.innerHTML = h;
-      box.setAttribute('data-done', '1');
     }
-    var f = el('mtFoot');
     if (f) {
-      f.innerHTML = '图上 9 条线：1 / 2 / 3 / 4 / 6 / 7 / 8 号线已运营，<b>5 号线 9/28 开通</b>，9 号线在建（虚线）。<br>' +
-        '换乘要点：<b>飞跃广场</b>=6↔7　<b>南湖广场</b>=5↔7（9/28 起）　<b>硅谷广场</b>=5↔6（9/28 起）　' +
-        '<b>华庆路</b>=6↔1　<b>汽车公园 / 东环城路</b>=7↔2';
+      var G = graphNow(), xf = [], k2;
+      for (k2 in G.idx) if (G.idx[k2].length > 1) xf.push(disp(k2) + '=' + G.idx[k2].map(function (x) { return x.line; }).join('↔'));
+      xf.sort();
+      f.innerHTML = '共 ' + Object.keys(MT_LINES).length + ' 条线 · ' + allStationNames().length +
+        ' 个站（换乘站 ' + xf.length + ' 个）。<br><b>换乘站：</b>' + xf.join('　') +
+        '<br>站序来自长春轨道交通官网线路数据，2026-09 核对。';
     }
   }
 
-  // ---------- 早市面板 ----------
+  // ================= 早市 / 市场 =================
+  var MARKETS = [
+    ['阳光乐购市集', '2.0 km', 0], ['光耀农贸市场早市', '2.8 km', 0],
+    ['前进广场早晚市集', '2.8 km', 0], ['陶然庭苑早市', '3.0 km', 0],
+    ['幸福农贸市场', '3.9 km', 0], ['湖西路市场', '5.4 km', 0],
+    ['东岭南街早市', '7.1 km', 1]
+  ];
   function renderMarkets() {
     var box = el('mtMk');
     if (!box || box.getAttribute('data-done')) return;
-    var h = '';
-    for (var i = 0; i < MARKETS.length; i++) {
+    var h = '', i;
+    for (i = 0; i < MARKETS.length; i++) {
       var m = MARKETS[i];
       h += '<div class="r' + (m[2] ? ' star' : '') + '"><span class="nm">' + (m[2] ? '★ ' : '') + m[0] +
         '</span><span class="dd">' + m[1] + '</span></div>';
     }
-    h += '<div class="hint" style="margin-top:6px">★ <b>东岭南街早市</b> 实测（2026-09-26）：' +
-      '规模很大、都好吃，<b>离 7 号线东岭南街站只有 100 m</b>。已买：肉蛋堡、羊杂汤、肉夹馍、熏肉大饼、姑娘（菇娘果）。</div>';
+    h += '<div class="hint" style="margin-top:6px">★ <b>东岭南街早市</b> 实测（2026-09-26）：规模很大、都好吃，' +
+      '<b>离 7 号线东岭南街站只有 100 m</b>。已买：肉蛋堡、羊杂汤、肉夹馍、熏肉大饼、姑娘（菇娘果）。</div>';
     box.innerHTML = h;
     box.setAttribute('data-done', '1');
   }
-
   var mkBtn = el('mtMkBtn');
   if (mkBtn) mkBtn.addEventListener('click', function () {
     var w = el('mtMkWrap');
     if (!w) return;
     w.classList.toggle('on');
-    mkBtn.textContent = w.classList.contains('on') ? '🥟 收起市场列表' : '🥟 早市 / 市场情报';
+    mkBtn.textContent = w.classList.contains('on') ? '🥟 收起市场列表' : '🥟 早市 / 市场';
   });
 
-  renderRoutes(); renderLines(); renderMarkets();
+  renderLines();
+  renderMarkets();
+  initPlanner();
 
   // ================= 全屏地铁图：拖动 + 双指缩放 =================
   var view = el('mtView'), stage = el('mtStage'), img = el('mtImg'), tip = el('mtTip');
@@ -3016,71 +3231,42 @@
   var s = 1, tx = 0, ty = 0, NW = 1080, NH = 1064;
   var MIN = 0.15, MAX = 9, opened = false, prevOverflow = '';
 
-  function box() {
-    var r = stage.getBoundingClientRect();
-    return { w: Math.max(1, r.width), h: Math.max(1, r.height) };
-  }
-  function paint() {
-    img.style.transform = 'translate3d(' + tx + 'px,' + ty + 'px,0) scale(' + s + ')';
-  }
+  function box() { var r = stage.getBoundingClientRect(); return { w: Math.max(1, r.width), h: Math.max(1, r.height) }; }
+  function paint() { img.style.transform = 'translate3d(' + tx + 'px,' + ty + 'px,0) scale(' + s + ')'; }
   function clamp() {
     var b = box(), w = NW * s, h = NH * s;
     var padX = Math.min(b.w * 0.75, w * 0.85), padY = Math.min(b.h * 0.75, h * 0.85);
-    if (w <= b.w) tx = (b.w - w) / 2;
-    else tx = Math.min(padX, Math.max(b.w - w - padX, tx));
-    if (h <= b.h) ty = (b.h - h) / 2;
-    else ty = Math.min(padY, Math.max(b.h - h - padY, ty));
+    if (w <= b.w) tx = (b.w - w) / 2; else tx = Math.min(padX, Math.max(b.w - w - padX, tx));
+    if (h <= b.h) ty = (b.h - h) / 2; else ty = Math.min(padY, Math.max(b.h - h - padY, ty));
   }
   function zoomAt(cx, cy, k) {
     var ns = Math.min(MAX, Math.max(MIN, s * k));
     if (ns === s) return;
     var f = ns / s;
-    tx = cx - (cx - tx) * f;
-    ty = cy - (cy - ty) * f;
+    tx = cx - (cx - tx) * f; ty = cy - (cy - ty) * f;
     s = ns; clamp(); paint();
   }
-  function fitScale() {
-    var b = box();
-    NW = img.naturalWidth || NW;
-    NH = img.naturalHeight || NH;
-    return Math.min(b.w / NW, b.h / NH);
-  }
-  function fitAll() {
-    var b = box();
-    s = fitScale();
-    tx = (b.w - NW * s) / 2; ty = (b.h - NH * s) / 2;
-    clamp(); paint();
-  }
+  function fitScale() { var b = box(); NW = img.naturalWidth || NW; NH = img.naturalHeight || NH; return Math.min(b.w / NW, b.h / NH); }
+  function fitAll() { var b = box(); s = fitScale(); tx = (b.w - NW * s) / 2; ty = (b.h - NH * s) / 2; clamp(); paint(); }
   function zoomStart() {
-    // 一进来就放大到「看得清站名」的程度，居中
     var b = box();
-    s = Math.max(fitScale() * 2.6, 0.9);
-    s = Math.min(MAX, s);
+    s = Math.min(MAX, Math.max(fitScale() * 2.6, 0.9));
     tx = (b.w - NW * s) / 2; ty = (b.h - NH * s) / 2;
     clamp(); paint();
   }
 
-  // ---- 触摸：单指拖动 / 双指缩放 ----
   var mode = 0, sx = 0, sy = 0, stx = 0, sty = 0, d0 = 1, s0 = 1, ax = 0, ay = 0;
   var lastTap = 0, lastTapX = 0, lastTapY = 0, moved = false;
 
-  function pDist(t) {
-    var dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY;
-    return Math.sqrt(dx * dx + dy * dy) || 1;
-  }
-  function pMid(t) {
-    return { x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2 };
-  }
-  function loc(p) {
-    var r = stage.getBoundingClientRect();
-    return { x: p.x - r.left, y: p.y - r.top };
-  }
+  function pDist(t) { var dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY; return Math.sqrt(dx * dx + dy * dy) || 1; }
+  function pMid(t) { return { x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2 }; }
+  function loc(p) { var r = stage.getBoundingClientRect(); return { x: p.x - r.left, y: p.y - r.top }; }
+  function hideTip() { if (tip) tip.classList.add('gone'); }
 
   stage.addEventListener('touchstart', function (e) {
     if (e.touches.length === 1) {
       mode = 1; moved = false;
-      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
-      stx = tx; sty = ty;
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY; stx = tx; sty = ty;
     } else if (e.touches.length >= 2) {
       mode = 2; moved = true;
       var m = pMid(e.touches);
@@ -3096,16 +3282,13 @@
     if (mode === 1 && e.touches.length === 1) {
       var cxp = e.touches[0].clientX, cyp = e.touches[0].clientY;
       if (Math.abs(cxp - sx) > 10 || Math.abs(cyp - sy) > 10) moved = true;
-      tx = stx + (cxp - sx);
-      ty = sty + (cyp - sy);
+      tx = stx + (cxp - sx); ty = sty + (cyp - sy);
       clamp(); paint();
     } else if (mode === 2 && e.touches.length >= 2) {
       var m = pMid(e.touches), ml = loc(m);
       var ns = Math.min(MAX, Math.max(MIN, s0 * (pDist(e.touches) / d0)));
       var f = ns / s0;
-      // 以「起始双指中点」为锚点缩放，并让整组跟着中点平移
-      tx = ml.x - (ax - stx) * f;
-      ty = ml.y - (ay - sty) * f;
+      tx = ml.x - (ax - stx) * f; ty = ml.y - (ay - sty) * f;
       s = ns; clamp(); paint();
     }
     e.preventDefault();
@@ -3113,7 +3296,6 @@
 
   stage.addEventListener('touchend', function (e) {
     if (e.touches.length === 0) {
-      // 双击（轻点两下）快速放大 / 还原
       if (mode === 1 && !moved) {
         var now = Date.now();
         if (now - lastTap < 300 && Math.abs(sx - lastTapX) < 44 && Math.abs(sy - lastTapY) < 44) {
@@ -3125,17 +3307,13 @@
       mode = 0;
     } else if (e.touches.length === 1) {
       mode = 1; moved = false;
-      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
-      stx = tx; sty = ty;
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY; stx = tx; sty = ty;
     }
     e.preventDefault();
   }, { passive: false });
 
-  // ---- 桌面：拖动 + 滚轮 ----
   var md = false, mx = 0, my = 0;
-  stage.addEventListener('mousedown', function (e) {
-    md = true; mx = e.clientX; my = e.clientY; stx = tx; sty = ty; e.preventDefault();
-  });
+  stage.addEventListener('mousedown', function (e) { md = true; mx = e.clientX; my = e.clientY; stx = tx; sty = ty; e.preventDefault(); });
   window.addEventListener('mousemove', function (e) {
     if (!md) return;
     tx = stx + (e.clientX - mx); ty = sty + (e.clientY - my);
@@ -3149,23 +3327,17 @@
   }, { passive: false });
   stage.addEventListener('dblclick', function (e) {
     var l = loc({ x: e.clientX, y: e.clientY });
-    zoomAt(l.x, l.y, s < MAX * 0.6 ? 2 : 0.5);
+    zoomAt(l.x, l.y, s < MAX * 0.55 ? 2 : 0.5);
   });
 
-  // ---- 按钮 ----
   function bindZoom(id, k) {
     var b = el(id);
-    if (b) b.addEventListener('click', function () {
-      var bb = box();
-      zoomAt(bb.w / 2, bb.h / 2, k);
-    });
+    if (b) b.addEventListener('click', function () { var bb = box(); zoomAt(bb.w / 2, bb.h / 2, k); });
   }
   bindZoom('mtIn', 1.5); bindZoom('mtInTop', 1.5);
   bindZoom('mtOut', 1 / 1.5); bindZoom('mtOutTop', 1 / 1.5);
   var fitBtn = el('mtFitTop');
   if (fitBtn) fitBtn.addEventListener('click', fitAll);
-
-  function hideTip() { if (tip) tip.classList.add('gone'); }
 
   function openMap() {
     view.classList.add('on');
@@ -3173,7 +3345,7 @@
     prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     if (tip) tip.classList.remove('gone');
-    void stage.offsetWidth;                 // 先强制一次布局，拿到真实尺寸
+    void stage.offsetWidth;
     if (img.complete && img.naturalWidth) zoomStart();
     else img.addEventListener('load', zoomStart, { once: true });
     setTimeout(hideTip, 3200);
@@ -3187,10 +3359,9 @@
   if (openBtn) openBtn.addEventListener('click', openMap);
   var closeBtn = el('mtClose');
   if (closeBtn) closeBtn.addEventListener('click', closeMap);
-  document.addEventListener('keydown', function (e) {
-    if (opened && e.key === 'Escape') closeMap();
-  });
+  document.addEventListener('keydown', function (e) { if (opened && e.key === 'Escape') closeMap(); });
 })();
 </script>
+</body></script>
 </body>
 </html>
