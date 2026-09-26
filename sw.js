@@ -1,6 +1,6 @@
 /* 今天吃什么 · Service Worker
    策略：网络优先，失败时回退缓存 —— 这样既能离线用，又不会卡住旧版本 */
-const CACHE = 'eat-what-v0.6.5';
+const CACHE = 'eat-what-v0.6.6';
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (e) => {
   e.waitUntil(
