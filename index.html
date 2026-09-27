@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#140a06">
-<meta name="description" content="920 种吃法，按地点/预算/评分抽一个，别再纠结了">
+<meta name="description" content="918 种吃法，按地点/预算/评分抽一个，别再纠结了">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="吃什么">
-<title>今天吃什么 v0.8.5</title>
+<title>今天吃什么 v0.9.0</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -237,7 +237,7 @@
   .bakacts button{flex:1;min-width:96px}
 
 /* ===== FB-CSS-START ===== */
-/* 📣 内测反馈卡（v0.8.5）—— 置顶在最上面
+/* 📣 内测反馈卡（v0.9.0）—— 置顶在最上面
    ⚠️ 这个文件里不要写构建标记那一对注释，标记由 build_v070.js 包。 */
 
 .fbbox{
@@ -333,7 +333,7 @@
 .fbprivacy code{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;color:var(--dim)}
 /* ===== FB-CSS-END ===== */
 /* ===== WX-CSS-START ===== */
-/* 🌤️ 天气卡 v0.8.5 —— 配色跟随主色（暖橙 #ff8c2b）
+/* 🌤️ 天气卡 v0.9.0 —— 配色跟随主色（暖橙 #ff8c2b）
    ⚠️ 这个文件里**不要**写构建标记那一对注释（START/END）：标记由 build_v070.js 包在外面，
       文件里再写一份会让每跑一次构建就多留一个尾巴（踩过这个坑）。 */
 #cardWx .wxloc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
@@ -400,7 +400,7 @@
 #cardWx .wxaqi .d{width:8px;height:8px;border-radius:50%;flex:none}
 /* ===== WX-CSS-END ===== */
 /* ===== GD-CSS-START ===== */
-  /* ================= 🗺️ 长春玩乐总表（v0.8.5） ================= */
+  /* ================= 🗺️ 长春玩乐总表（v0.9.0） ================= */
 
   /* ---------- 这一栏专用的出发站 ---------- */
   .gdplan{display:flex;align-items:center;gap:8px;margin-top:11px;padding:9px 11px;border-radius:12px;
@@ -470,7 +470,7 @@
   .gdempty{font-size:12.5px;color:var(--dim);text-align:center;padding:20px 0}
 /* ===== GD-CSS-END ===== */
 /* ===== GD2-CSS-START ===== */
-/* 🗺️ 玩乐卡 v2 增量样式（v0.8.5）：天气条 / 筛选 / 时间状态 / 距离 / 去过 / 复制
+/* 🗺️ 玩乐卡 v2 增量样式（v0.9.0）：天气条 / 筛选 / 时间状态 / 距离 / 去过 / 复制
    ⚠️ 这个文件里**不要**写构建标记那一对注释：由构建器包，文件里再写会重复堆叠。 */
 
 /* 顶部天气条 */
@@ -534,7 +534,7 @@
 .grow .l1{flex-wrap:wrap;gap:5px}
 .grow .l1 .nm{flex:1;min-width:110px}
 /* ===== GD2-CSS-END ===== */
-  /* ================= 🚇 出行规划（v0.8.5） ================= */
+  /* ================= 🚇 出行规划（v0.9.0） ================= */
 
   /* ---------- 起终点选择 ---------- */
   .mtplan{display:flex;align-items:flex-end;gap:8px;margin-top:12px}
@@ -776,7 +776,7 @@
 </div>
 <!-- FB-CARD-END -->
   <header>
-    <div class="brand">今天吃什么 · v0.8.5</div>
+    <div class="brand">今天吃什么 · v0.9.0</div>
 <!-- MADE-START -->
     <div class="madeby">made by <b>xiao4hao6</b><span class="sep">/</span>deepseek harness<span class="nc">严禁用作商业途径</span></div>
     <style>
@@ -1907,7 +1907,6 @@ var FOODS_EXTRA = [
   { n: "小碗菜（自助打菜）", t: "主食", m: ["午餐","晚餐"], p: "便宜", s: ["单人","两人"], c: "两荤一素最划算，自己控制量" },
   { n: "卤味饭（卤蛋 + 卤豆干）", t: "主食", m: ["午餐","晚餐","夜宵"], p: "便宜", s: ["单人"], c: "加个卤蛋和豆干，很搭" },
   { n: "铁板饭", t: "主食", m: ["午餐","晚餐"], p: "中等", s: ["单人"], c: "端上来还在响，小心烫嘴" },
-  { n: "石锅鱼饭", t: "主食", m: ["午餐","晚餐"], p: "中等", s: ["单人","两人"], c: "锅底焦的那层最好吃" },
   { n: "干锅花菜饭", t: "主食", m: ["午餐","晚餐"], p: "中等", s: ["单人"], c: "素菜里最下饭的一个" },
   { n: "酸菜牛肉饭", t: "主食", m: ["午餐","晚餐"], p: "中等", s: ["单人"], c: "东北人喝汤吃饭都合适" },
   { n: "玉米排骨饭", t: "主食", m: ["午餐","晚餐"], p: "中等", s: ["单人"], c: "汤清甜，配米饭" },
@@ -2035,7 +2034,6 @@ var FOODS_EXTRA = [
   { n: "蚂蚁上树", t: "家常炒菜", m: ["午餐","晚餐"], p: "便宜", s: ["单人"], c: "粉丝吸汤汁，别炒太干" },
   { n: "肉末茄子", t: "家常炒菜", m: ["午餐","晚餐"], p: "便宜", s: ["单人"], c: "茄子先炸再烧才够软" },
   { n: "肉末粉丝", t: "家常炒菜", m: ["午餐","晚餐"], p: "便宜", s: ["单人"], c: "跟蚂蚁上树差不多，点一个就行" },
-  { n: "辣子鸡丁", t: "家常炒菜", m: ["午餐","晚餐"], p: "中等", s: ["两人"], c: "要在辣椒堆里找鸡块的那种" },
   { n: "双椒炒肉", t: "家常炒菜", m: ["午餐","晚餐"], p: "便宜", s: ["单人"], c: "青红椒一起，好看又下饭" },
   { n: "农家小炒肉", t: "家常炒菜", m: ["午餐","晚餐"], p: "中等", s: ["单人","两人"], c: "带皮五花+青椒，湖南做法最香" },
   { n: "尖椒干豆腐", t: "家常炒菜", m: ["午餐","晚餐"], p: "便宜", s: ["单人"], c: "东北菜馆必点，配米饭" },
@@ -2551,8 +2549,21 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   var stats = {};     // { 店名: { c: 抽到次数, e: 吃过次数, last: 时间戳 } }
   var tagOv = {};     // { 店名: '自定义标签' } —— 覆盖任意店（含内置）的口碑标签，'' 表示抹掉
   var rateOv = {};    // { 店名: 4.5 } —— 覆盖评分；0 表示"标为无评分"
+/* MEALPATCH-START */
+  /* 按当前时段自动勾餐次 —— 不然中午十二点会抽到「豆浆 + 油条」。
+     只管初始值：用户手动点过餐次 chips 之后就以用户的为准。 */
+  function autoMeals() {
+    var _h = new Date().getHours();
+    if (_h >= 5 && _h < 10) return ["早餐"];
+    if (_h >= 10 && _h < 14) return ["午餐"];
+    if (_h >= 14 && _h < 17) return ["午餐", "晚餐"];
+    if (_h >= 17 && _h < 21) return ["晚餐"];
+    return ["夜宵"];
+  }
+/* MEALPATCH-END */
+
   var state = {
-    scenes: SCENES.slice(), meals: MEALS.slice(), types: TYPES.slice(), prices: PRICES.slice(), locs: LOCS.slice(),
+    scenes: SCENES.slice(), meals: autoMeals(), types: TYPES.slice(), prices: PRICES.slice(), locs: LOCS.slice(),
     hist: [], noRepeat: true, sfx: true, rolling: false, current: null, rate: '不限'
   };
   function getDB() { return FOODS.concat(custom); }
@@ -2695,6 +2706,18 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   function sfxSoft() { tone(620, .08, 'sine', .09); }
 
   function buildPool() {
+    var _r = __poolStrict();
+    if (!_r.length) {
+      /* 自动筛的餐次把池子筛空了（比如深夜只要夜宵，而这个地点没录夜宵）
+         → 退回全餐次，别让用户对着「没有匹配的」发呆 */
+      var _sv = state.meals;
+      state.meals = MEALS.slice();
+      _r = __poolStrict();
+      state.meals = _sv;
+    }
+    return _r;
+  }
+  function __poolStrict() {
     return getDB().filter(function (f) {
       if (state.types.indexOf(f.t) < 0) return false;
       if (state.prices.indexOf(f.p) < 0) return false;
@@ -2908,7 +2931,8 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     el('scene').textContent = f.s.join(' / ');
     el('price').textContent = f.p;
     el('price').style.color = PCOLOR[f.p];
-    el('combo').textContent = f.c ? ('搭配：' + f.c) : '';
+    el('combo').textContent = (f.c ? ('搭配：' + f.c) : '') +
+      /* NOLOC-NOTE */ (f.loc ? '' : (f.c ? '　·　' : '') + '这是菜名，去哪家你自己挑');
     el('tag').textContent = QUOTES[Math.floor(Math.random() * QUOTES.length)];
     renderMeta(f);
     var stage = el('stage');
@@ -3145,7 +3169,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     g.fillText('今 天 吃 什 么', W / 2, 130);
     g.fillStyle = 'rgba(192,160,138,.9)';
     g.font = '22px ' + F;
-    g.fillText('随机决定器 · v0.8.5', W / 2, 170);
+    g.fillText('随机决定器 · v0.9.0', W / 2, 170);
     // 主菜名
     g.fillStyle = '#fff';
     var size = 74;
@@ -3745,7 +3769,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   <button data-go="cardBak">📦 备份</button>
 </nav>
 
-<!-- ================= 🚇 出行规划（v0.8.5） ================= -->
+<!-- ================= 🚇 出行规划（v0.9.0） ================= -->
 <div id="mtView">
   <div class="bar">
     <span class="ttl">长春轨道交通线网图</span>
@@ -4461,13 +4485,13 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 </script>
 <!-- GD-SCRIPT-START -->
 <script>
-/* ---------------- 🗺️ 长春玩乐总表 v0.8.5 ----------------
+/* ---------------- 🗺️ 长春玩乐总表 v0.9.0 ----------------
    数据：长春吃喝玩乐总表（191 条，早市/夜市/商场/景点）
    ⚠️ 「怎么去」由**这一栏自己的出发站**实时算（跟上面《出行规划》那张卡互不影响）。
    ⚠️ 算不出来就**什么都不显示 + 出警告**，绝不退回离线写死的字符串
       —— 那份是按百花园算的，拿它冒充别的起点会显示错路线（踩过这个坑）。
 
-   v0.8.5 新增：
+   v0.9.0 新增：
      · ⏰ 营业时段状态 —— 「正热闹 / 快收摊了！还剩 30 分钟 / 已收摊」
         时段来自 it.tm：exact 是原文写了钟点的，rough 是「清晨/傍晚起」这种推算的（一律带「约」）
      · 📍 直线距离 —— 出发站到目标**最近地铁站**的直线距离（不是到门口，所以标「直线」）
@@ -5011,7 +5035,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 <!-- GD-SCRIPT-END -->
 <!-- WX-SCRIPT-START -->
 <script>
-/* ---------------- 🌤️ 实时天气 v0.8.5 ----------------
+/* ---------------- 🌤️ 实时天气 v0.9.0 ----------------
    数据源：Open-Meteo（https://open-meteo.com）
      · 免费、不用注册、不用 key、CORS 全开（实测 allow-origin: *）
      · 响应只有 ~4KB
@@ -5406,10 +5430,10 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 <!-- WX-SCRIPT-END -->
 <!-- FB-SCRIPT-START -->
 <script>
-/* ---------------- 📣 内测反馈卡 v0.8.5 ----------------
+/* ---------------- 📣 内测反馈卡 v0.9.0 ----------------
    置顶在最上面，小范围内测用。
 
-   ⚠️ 隐私设计（v0.8.5 重做）：
+   ⚠️ 隐私设计（v0.9.0 重做）：
      旧版把微信号**明文写在页面上**，而网页是公开的（GitHub Pages 没有访问控制），
      谁 view-source 都能拿到，搜索引擎还可能收录。这不是「小范围」该有的样子。
      现在：
@@ -5639,12 +5663,34 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     /* 收起状态：默认展开（内测期间就是要让人看见），收起过就记住 */
     if (ls(K_FOLD) === '1') box.classList.add('fold');
     var tg = el('fbToggle');
+    var userToggled = false;          /* 用户自己开合过 → 就别再替他做主了 */
     var syncTg = function () { tg.textContent = box.classList.contains('fold') ? '展开' : '收起'; };
     syncTg();
     if (tg) tg.addEventListener('click', function () {
+      userToggled = true;
       box.classList.toggle('fold');
       lsSet(K_FOLD, box.classList.contains('fold') ? '1' : '0');
       syncTg();
+    });
+
+    /* 第一次抽签之后自动收起 —— 卡已经看过了，该给抽签让路了。
+       只在「用户从没自己动过」时才插手，免得跟他拔河。 */
+    var didRoll = false;
+    var autoFold = function () {
+      if (didRoll || userToggled) return;
+      didRoll = true;
+      if (!box.classList.contains('fold')) {
+        box.classList.add('fold');
+        lsSet(K_FOLD, '1');
+        syncTg();
+      }
+    };
+    var drawBtn = el('draw');
+    if (drawBtn) drawBtn.addEventListener('click', autoFold);
+    document.addEventListener('keydown', function (e) {
+      // 在输入框里敲空格不算抽签
+      if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+      if (e.code === 'Space') autoFold();
     });
 
     /* 收起时标题栏露的那行字：不再露微信号，改成一句话提示 */
