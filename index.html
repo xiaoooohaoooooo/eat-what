@@ -13,7 +13,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="吃什么">
-<title>今天吃什么 v0.8.4</title>
+<title>今天吃什么 v0.8.5</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -237,7 +237,7 @@
   .bakacts button{flex:1;min-width:96px}
 
 /* ===== FB-CSS-START ===== */
-/* 📣 内测反馈卡（v0.8.4）—— 置顶在最上面
+/* 📣 内测反馈卡（v0.8.5）—— 置顶在最上面
    ⚠️ 这个文件里不要写构建标记那一对注释，标记由 build_v070.js 包。 */
 
 .fbbox{
@@ -333,7 +333,7 @@
 .fbprivacy code{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;color:var(--dim)}
 /* ===== FB-CSS-END ===== */
 /* ===== WX-CSS-START ===== */
-/* 🌤️ 天气卡 v0.8.4 —— 配色跟随主色（暖橙 #ff8c2b）
+/* 🌤️ 天气卡 v0.8.5 —— 配色跟随主色（暖橙 #ff8c2b）
    ⚠️ 这个文件里**不要**写构建标记那一对注释（START/END）：标记由 build_v070.js 包在外面，
       文件里再写一份会让每跑一次构建就多留一个尾巴（踩过这个坑）。 */
 #cardWx .wxloc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
@@ -400,7 +400,7 @@
 #cardWx .wxaqi .d{width:8px;height:8px;border-radius:50%;flex:none}
 /* ===== WX-CSS-END ===== */
 /* ===== GD-CSS-START ===== */
-  /* ================= 🗺️ 长春玩乐总表（v0.8.4） ================= */
+  /* ================= 🗺️ 长春玩乐总表（v0.8.5） ================= */
 
   /* ---------- 这一栏专用的出发站 ---------- */
   .gdplan{display:flex;align-items:center;gap:8px;margin-top:11px;padding:9px 11px;border-radius:12px;
@@ -470,7 +470,7 @@
   .gdempty{font-size:12.5px;color:var(--dim);text-align:center;padding:20px 0}
 /* ===== GD-CSS-END ===== */
 /* ===== GD2-CSS-START ===== */
-/* 🗺️ 玩乐卡 v2 增量样式（v0.8.4）：天气条 / 筛选 / 时间状态 / 距离 / 去过 / 复制
+/* 🗺️ 玩乐卡 v2 增量样式（v0.8.5）：天气条 / 筛选 / 时间状态 / 距离 / 去过 / 复制
    ⚠️ 这个文件里**不要**写构建标记那一对注释：由构建器包，文件里再写会重复堆叠。 */
 
 /* 顶部天气条 */
@@ -534,7 +534,7 @@
 .grow .l1{flex-wrap:wrap;gap:5px}
 .grow .l1 .nm{flex:1;min-width:110px}
 /* ===== GD2-CSS-END ===== */
-  /* ================= 🚇 出行规划（v0.8.4） ================= */
+  /* ================= 🚇 出行规划（v0.8.5） ================= */
 
   /* ---------- 起终点选择 ---------- */
   .mtplan{display:flex;align-items:flex-end;gap:8px;margin-top:12px}
@@ -776,7 +776,17 @@
 </div>
 <!-- FB-CARD-END -->
   <header>
-    <div class="brand">今天吃什么 · v0.8.4</div>
+    <div class="brand">今天吃什么 · v0.8.5</div>
+<!-- MADE-START -->
+    <div class="madeby">made by <b>xiao4hao6</b><span class="sep">/</span>deepseek harness<span class="nc">严禁用作商业途径</span></div>
+    <style>
+      .madeby{margin-top:6px;font-size:11.5px;color:var(--dim);letter-spacing:.3px;line-height:1.6}
+      .madeby b{color:var(--gold);font-weight:700;letter-spacing:.4px}
+      .madeby .sep{color:rgba(255,140,43,.55);margin:0 5px}
+      .madeby .nc{display:block;margin-top:3px;font-size:10px;
+        color:rgba(224,144,122,.9);letter-spacing:1px}
+    </style>
+<!-- MADE-END -->
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -1026,19 +1036,6 @@
     快捷键：<kbd>空格</kbd> 再抽一次　<kbd>Enter</kbd> 标记吃了　<kbd>Q</kbd> 楼下随便吃点<br>
     <b>📏</b> 按你的定位算的直线距离　·　<b>📍</b> 参考距离（没定位时用）<br>评分徽章和标签都能改，只存你本机 ✎　·　封寝时间点上方倒计时条就能改 ⏰<br>
     共 <span id="totalNum">0</span> 种吃法 · 数据存在本机 · 祝你不纠结，吃得香 🍚
-<!-- MADE-START -->
-    <div class="madeby">
-      made by <b>xiao4hao6</b><span class="sep">/</span>deepseek harness
-      <div class="nocom">严禁用作商业途径</div>
-    </div>
-    <style>
-      .madeby{margin-top:13px;padding-top:10px;border-top:1px dashed rgba(255,140,43,.22);
-        font-size:11px;line-height:1.75;color:var(--dim);letter-spacing:.2px}
-      .madeby b{color:var(--text);font-weight:600}
-      .madeby .sep{color:rgba(255,140,43,.5);margin:0 5px}
-      .madeby .nocom{margin-top:4px;color:#e0907a;font-size:10.5px;letter-spacing:.8px}
-    </style>
-<!-- MADE-END -->
   </footer>
 </div>
 <div id="toast"></div>
@@ -3148,7 +3145,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     g.fillText('今 天 吃 什 么', W / 2, 130);
     g.fillStyle = 'rgba(192,160,138,.9)';
     g.font = '22px ' + F;
-    g.fillText('随机决定器 · v0.8.4', W / 2, 170);
+    g.fillText('随机决定器 · v0.8.5', W / 2, 170);
     // 主菜名
     g.fillStyle = '#fff';
     var size = 74;
@@ -3748,7 +3745,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   <button data-go="cardBak">📦 备份</button>
 </nav>
 
-<!-- ================= 🚇 出行规划（v0.8.4） ================= -->
+<!-- ================= 🚇 出行规划（v0.8.5） ================= -->
 <div id="mtView">
   <div class="bar">
     <span class="ttl">长春轨道交通线网图</span>
@@ -4464,13 +4461,13 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 </script>
 <!-- GD-SCRIPT-START -->
 <script>
-/* ---------------- 🗺️ 长春玩乐总表 v0.8.4 ----------------
+/* ---------------- 🗺️ 长春玩乐总表 v0.8.5 ----------------
    数据：长春吃喝玩乐总表（191 条，早市/夜市/商场/景点）
    ⚠️ 「怎么去」由**这一栏自己的出发站**实时算（跟上面《出行规划》那张卡互不影响）。
    ⚠️ 算不出来就**什么都不显示 + 出警告**，绝不退回离线写死的字符串
       —— 那份是按百花园算的，拿它冒充别的起点会显示错路线（踩过这个坑）。
 
-   v0.8.4 新增：
+   v0.8.5 新增：
      · ⏰ 营业时段状态 —— 「正热闹 / 快收摊了！还剩 30 分钟 / 已收摊」
         时段来自 it.tm：exact 是原文写了钟点的，rough 是「清晨/傍晚起」这种推算的（一律带「约」）
      · 📍 直线距离 —— 出发站到目标**最近地铁站**的直线距离（不是到门口，所以标「直线」）
@@ -5014,7 +5011,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 <!-- GD-SCRIPT-END -->
 <!-- WX-SCRIPT-START -->
 <script>
-/* ---------------- 🌤️ 实时天气 v0.8.4 ----------------
+/* ---------------- 🌤️ 实时天气 v0.8.5 ----------------
    数据源：Open-Meteo（https://open-meteo.com）
      · 免费、不用注册、不用 key、CORS 全开（实测 allow-origin: *）
      · 响应只有 ~4KB
@@ -5409,10 +5406,10 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 <!-- WX-SCRIPT-END -->
 <!-- FB-SCRIPT-START -->
 <script>
-/* ---------------- 📣 内测反馈卡 v0.8.4 ----------------
+/* ---------------- 📣 内测反馈卡 v0.8.5 ----------------
    置顶在最上面，小范围内测用。
 
-   ⚠️ 隐私设计（v0.8.4 重做）：
+   ⚠️ 隐私设计（v0.8.5 重做）：
      旧版把微信号**明文写在页面上**，而网页是公开的（GitHub Pages 没有访问控制），
      谁 view-source 都能拿到，搜索引擎还可能收录。这不是「小范围」该有的样子。
      现在：
