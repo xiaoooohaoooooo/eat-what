@@ -13,7 +13,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="吃什么">
-<title>今天吃什么 v0.8.2</title>
+<title>今天吃什么 v0.8.3</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -237,7 +237,7 @@
   .bakacts button{flex:1;min-width:96px}
 
 /* ===== FB-CSS-START ===== */
-/* 📣 内测反馈卡（v0.8.2）—— 置顶在最上面
+/* 📣 内测反馈卡（v0.8.3）—— 置顶在最上面
    ⚠️ 这个文件里不要写构建标记那一对注释，标记由 build_v070.js 包。 */
 
 .fbbox{
@@ -274,6 +274,18 @@
 .fbhint b{color:var(--text)}
 
 .fblabel{font-size:11.5px;color:var(--dim);margin:12px 0 6px}
+.fblabel .fbcnt{color:var(--org);font-family:ui-monospace,Consolas,monospace;font-size:10.5px}
+
+/* 输入框 —— 这是反馈卡真正的「入口」，别再做成只能复制不能写了 */
+.fbta{width:100%;box-sizing:border-box;display:block;
+  background:rgba(20,10,6,.55);color:var(--text);
+  border:1px solid rgba(255,209,102,.4);border-radius:10px;
+  padding:9px 11px;font-size:13px;line-height:1.6;font-family:inherit;
+  resize:vertical;min-height:76px;outline:none;transition:.15s;
+  -webkit-appearance:none;appearance:none}
+.fbta::placeholder{color:#8f7a6a}
+.fbta:focus{border-color:var(--gold);background:rgba(20,10,6,.72);
+  box-shadow:0 0 0 3px rgba(255,209,102,.13)}
 .fbtypes{display:flex;gap:6px;flex-wrap:wrap}
 .fbtypes button{border:1px solid rgba(255,140,43,.35);background:rgba(255,140,43,.08);
   color:var(--dim);border-radius:9px;padding:6px 10px;font-size:11.5px;cursor:pointer;
@@ -321,7 +333,7 @@
 .fbprivacy code{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;color:var(--dim)}
 /* ===== FB-CSS-END ===== */
 /* ===== WX-CSS-START ===== */
-/* 🌤️ 天气卡 v0.8.2 —— 配色跟随主色（暖橙 #ff8c2b）
+/* 🌤️ 天气卡 v0.8.3 —— 配色跟随主色（暖橙 #ff8c2b）
    ⚠️ 这个文件里**不要**写构建标记那一对注释（START/END）：标记由 build_v070.js 包在外面，
       文件里再写一份会让每跑一次构建就多留一个尾巴（踩过这个坑）。 */
 #cardWx .wxloc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
@@ -388,7 +400,7 @@
 #cardWx .wxaqi .d{width:8px;height:8px;border-radius:50%;flex:none}
 /* ===== WX-CSS-END ===== */
 /* ===== GD-CSS-START ===== */
-  /* ================= 🗺️ 长春玩乐总表（v0.8.2） ================= */
+  /* ================= 🗺️ 长春玩乐总表（v0.8.3） ================= */
 
   /* ---------- 这一栏专用的出发站 ---------- */
   .gdplan{display:flex;align-items:center;gap:8px;margin-top:11px;padding:9px 11px;border-radius:12px;
@@ -458,7 +470,7 @@
   .gdempty{font-size:12.5px;color:var(--dim);text-align:center;padding:20px 0}
 /* ===== GD-CSS-END ===== */
 /* ===== GD2-CSS-START ===== */
-/* 🗺️ 玩乐卡 v2 增量样式（v0.8.2）：天气条 / 筛选 / 时间状态 / 距离 / 去过 / 复制
+/* 🗺️ 玩乐卡 v2 增量样式（v0.8.3）：天气条 / 筛选 / 时间状态 / 距离 / 去过 / 复制
    ⚠️ 这个文件里**不要**写构建标记那一对注释：由构建器包，文件里再写会重复堆叠。 */
 
 /* 顶部天气条 */
@@ -522,7 +534,7 @@
 .grow .l1{flex-wrap:wrap;gap:5px}
 .grow .l1 .nm{flex:1;min-width:110px}
 /* ===== GD2-CSS-END ===== */
-  /* ================= 🚇 出行规划（v0.8.2） ================= */
+  /* ================= 🚇 出行规划（v0.8.3） ================= */
 
   /* ---------- 起终点选择 ---------- */
   .mtplan{display:flex;align-items:flex-end;gap:8px;margin-top:12px}
@@ -744,6 +756,10 @@
       <button type="button" data-t="🌟 挺好用">🌟 挺好用</button>
     </div>
 
+    <div class="fblabel">想说什么，直接在这儿写 <span class="fbcnt" id="fbCnt"></span></div>
+    <textarea id="fbTa" class="fbta" rows="4" maxlength="2000"
+      placeholder="哪儿别扭、什么 bug、想加什么功能…写清楚点我好看。&#10;（如果是个 bug，说一下你当时点哪儿了）"></textarea>
+
     <div class="fbacts">
       <button type="button" class="fbbtn" id="fbTpl">📋 复制反馈内容</button>
       <button type="button" class="fbbtn primary" id="fbSend">📮 匿名发给我</button>
@@ -760,7 +776,7 @@
 </div>
 <!-- FB-CARD-END -->
   <header>
-    <div class="brand">今天吃什么 · v0.8.2</div>
+    <div class="brand">今天吃什么 · v0.8.3</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -3119,7 +3135,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     g.fillText('今 天 吃 什 么', W / 2, 130);
     g.fillStyle = 'rgba(192,160,138,.9)';
     g.font = '22px ' + F;
-    g.fillText('随机决定器 · v0.8.2', W / 2, 170);
+    g.fillText('随机决定器 · v0.8.3', W / 2, 170);
     // 主菜名
     g.fillStyle = '#fff';
     var size = 74;
@@ -3719,7 +3735,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   <button data-go="cardBak">📦 备份</button>
 </nav>
 
-<!-- ================= 🚇 出行规划（v0.8.2） ================= -->
+<!-- ================= 🚇 出行规划（v0.8.3） ================= -->
 <div id="mtView">
   <div class="bar">
     <span class="ttl">长春轨道交通线网图</span>
@@ -4435,13 +4451,13 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 </script>
 <!-- GD-SCRIPT-START -->
 <script>
-/* ---------------- 🗺️ 长春玩乐总表 v0.8.2 ----------------
+/* ---------------- 🗺️ 长春玩乐总表 v0.8.3 ----------------
    数据：长春吃喝玩乐总表（191 条，早市/夜市/商场/景点）
    ⚠️ 「怎么去」由**这一栏自己的出发站**实时算（跟上面《出行规划》那张卡互不影响）。
    ⚠️ 算不出来就**什么都不显示 + 出警告**，绝不退回离线写死的字符串
       —— 那份是按百花园算的，拿它冒充别的起点会显示错路线（踩过这个坑）。
 
-   v0.8.2 新增：
+   v0.8.3 新增：
      · ⏰ 营业时段状态 —— 「正热闹 / 快收摊了！还剩 30 分钟 / 已收摊」
         时段来自 it.tm：exact 是原文写了钟点的，rough 是「清晨/傍晚起」这种推算的（一律带「约」）
      · 📍 直线距离 —— 出发站到目标**最近地铁站**的直线距离（不是到门口，所以标「直线」）
@@ -4985,7 +5001,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 <!-- GD-SCRIPT-END -->
 <!-- WX-SCRIPT-START -->
 <script>
-/* ---------------- 🌤️ 实时天气 v0.8.2 ----------------
+/* ---------------- 🌤️ 实时天气 v0.8.3 ----------------
    数据源：Open-Meteo（https://open-meteo.com）
      · 免费、不用注册、不用 key、CORS 全开（实测 allow-origin: *）
      · 响应只有 ~4KB
@@ -5380,10 +5396,10 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 <!-- WX-SCRIPT-END -->
 <!-- FB-SCRIPT-START -->
 <script>
-/* ---------------- 📣 内测反馈卡 v0.8.2 ----------------
+/* ---------------- 📣 内测反馈卡 v0.8.3 ----------------
    置顶在最上面，小范围内测用。
 
-   ⚠️ 隐私设计（v0.8.2 重做）：
+   ⚠️ 隐私设计（v0.8.3 重做）：
      旧版把微信号**明文写在页面上**，而网页是公开的（GitHub Pages 没有访问控制），
      谁 view-source 都能拿到，搜索引擎还可能收录。这不是「小范围」该有的样子。
      现在：
@@ -5416,6 +5432,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   /* ================================ */
 
   var K_FOLD = 'ew-fb-fold-v1';
+  var K_DRAFT = 'ew-fb-draft-v1';     /* 草稿：收起 / 刷新都不会把写的字弄丢 */
   var pick = '';
 
   function ls(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -5460,8 +5477,15 @@ FOODS = FOODS.concat(FOODS_EXTRA);
       ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
   }
 
+  /* 用户在输入框里写的字 */
+  function userText() {
+    var ta = el('fbTa');
+    return ta ? String(ta.value || '').trim() : '';
+  }
+
   function template() {
     var L = [];
+    var body = userText();
     L.push('【今天吃什么 · 内测反馈】');
     L.push('');
     L.push('类型：' + (pick || '（自己写）'));
@@ -5472,15 +5496,35 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     L.push('时间：' + stamp());
     L.push('');
     L.push('问题：');
-    L.push('');
-    L.push('');
-    L.push('怎么重现：');
-    L.push('1. ');
-    L.push('2. ');
-    L.push('');
-    L.push('我希望是：');
-    L.push('');
+    if (body) {
+      // 写了就直接带上 —— 不要再套一层「怎么重现」的架子，那是给没写的人用的
+      L.push(body);
+    } else {
+      L.push('');
+      L.push('');
+      L.push('怎么重现：');
+      L.push('1. ');
+      L.push('2. ');
+      L.push('');
+      L.push('我希望是：');
+      L.push('');
+    }
     return L.join('\n');
+  }
+
+  /* 空着就不让发 —— 不然我收到的是一张空白明信片 */
+  function tooEmpty() {
+    return !userText();
+  }
+  function emptyHint(tip) {
+    var ta = el('fbTa');
+    if (ta) { try { ta.focus(); } catch (e) { } }
+    if (tip) {
+      tip.textContent = pick
+        ? '选了「' + pick + '」，但还没写字 —— 补两句我才知道发生了啥。'
+        : '先在上面写两句吧 —— 不写字我收到的就是空白。';
+      tip.className = 'fbtip err';
+    }
   }
 
   /* ---------- 复制（带 execCommand 兜底） ---------- */
@@ -5614,8 +5658,10 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     var mi = el('fbMoreIn');
     if (mi) {
       var h = '';
-      h += '<b>📋 复制反馈内容</b> —— 自动把版本号、机型、屏幕尺寸填好，' +
-        '你粘到微信 / QQ 发我。适合想细说、想追问的情况。<br><br>';
+      h += '<b>先在上面写你想说的</b> —— 下面两个按钮都会把你写的东西带上，' +
+        '再自动填好版本号、机型、屏幕尺寸。<br><br>';
+      h += '<b>📋 复制反馈内容</b> —— 复制成一段文字，你粘到微信 / QQ 发我。' +
+        '适合想细说、想追问的情况。<br><br>';
       if (CFG.ntfyOn) {
         h += '<b>📮 匿名发给我</b> —— 点一下就直接发走，' +
           '<b>不用加好友、不用留名字 / 电话 / 邮箱</b>，我也收不到你是谁。<br><br>';
@@ -5626,6 +5672,29 @@ FOODS = FOODS.concat(FOODS_EXTRA);
         h += '（匿名通道当前关着，只能复制。）';
       }
       mi.innerHTML = h;
+    }
+
+    /* 输入框：恢复草稿 + 自动存草稿 + 字数 */
+    var ta = el('fbTa');
+    var cnt = el('fbCnt');
+    var paintCnt = function () {
+      if (!cnt || !ta) return;
+      var n = String(ta.value || '').length;
+      cnt.textContent = n ? n + ' / 2000 字' : '';
+    };
+    if (ta) {
+      var draft = ls(K_DRAFT);
+      if (draft) ta.value = draft;
+      paintCnt();
+      var saveT = null;
+      ta.addEventListener('input', function () {
+        paintCnt();
+        // 写了一半去点收起 / 关掉页面，别把字丢了
+        if (saveT) clearTimeout(saveT);
+        saveT = setTimeout(function () { lsSet(K_DRAFT, ta.value); }, 400);
+      });
+      // 手机上敲完收起键盘再存一次
+      ta.addEventListener('blur', function () { lsSet(K_DRAFT, ta.value); });
     }
 
     /* 隐私说明 */
@@ -5657,8 +5726,14 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     }
 
     var tpl = el('fbTpl');
-    if (tpl) tpl.addEventListener('click', function () { copy(template(), tpl, tip); });
-    if (snd) snd.addEventListener('click', function () { send(template(), snd, tip); });
+    if (tpl) tpl.addEventListener('click', function () {
+      if (tooEmpty()) { emptyHint(tip); return; }
+      copy(template(), tpl, tip);
+    });
+    if (snd) snd.addEventListener('click', function () {
+      if (tooEmpty()) { emptyHint(tip); return; }
+      send(template(), snd, tip);
+    });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
@@ -5667,6 +5742,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   /* 给测试用 */
   window.__ewFb = {
     template: template, device: device, ver: appVer,
+    userText: userText,
     cfg: function () { return { wx: CFG.wx, ntfy: CFG.ntfy, ntfyOn: CFG.ntfyOn, contact: CFG.contact }; },
     topic: function () { return CFG.ntfy; }
   };
