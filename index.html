@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="吃什么">
-<title>今天吃什么 v0.6.11</title>
+<title>今天吃什么 v0.6.13</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -236,7 +236,30 @@
   .bakacts button{flex:1;min-width:96px}
 
 /* ===== GD-CSS-START ===== */
-  /* ================= 🗺️ 长春玩乐总表（v0.6.11） ================= */
+  /* ================= 🗺️ 长春玩乐总表（v0.6.13） ================= */
+
+  /* ---------- 这一栏专用的出发站 ---------- */
+  .gdplan{display:flex;align-items:center;gap:8px;margin-top:11px;padding:9px 11px;border-radius:12px;
+    border:1px solid rgba(255,209,102,.45);
+    background:linear-gradient(150deg,rgba(255,209,102,.14),rgba(255,140,43,.05))}
+  .gdplan .lb{font-size:11px;color:var(--gold);font-weight:900;letter-spacing:.14em;flex:none}
+  .gdplan select{flex:1;min-width:0;border:1px solid rgba(255,209,102,.4);background-color:rgba(0,0,0,.36);
+    color:var(--text);border-radius:10px;padding:9px 30px 9px 11px;font-size:13.5px;font-weight:800;
+    font-family:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;
+    background-image:linear-gradient(45deg,transparent 50%,#c0a08a 50%),
+                     linear-gradient(135deg,#c0a08a 50%,transparent 50%);
+    background-position:calc(100% - 15px) calc(50% - 2px),calc(100% - 10px) calc(50% - 2px);
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .gdplan select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,209,102,.18)}
+  .gdplan select option{background:#2a1408;color:#ffeee0;font-weight:700}
+  .gdplan select optgroup{background:#1b0d05;color:var(--org);font-weight:900;font-style:normal}
+  .gdsync{flex:none;width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,209,102,.45);
+    background:rgba(255,209,102,.14);color:var(--gold);font-size:16px;font-weight:900;
+    font-family:inherit;cursor:pointer;line-height:1}
+  .gdsync:active{transform:scale(.92);background:rgba(255,209,102,.3)}
+  .gdwarn{margin-top:8px;font-size:11.5px;line-height:1.6;color:#ffcf9a;
+    background:rgba(255,140,43,.13);border:1px solid rgba(255,140,43,.35);
+    border-radius:9px;padding:7px 10px}
   .gdtabs{display:flex;gap:6px;margin-top:11px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
   .gdtabs::-webkit-scrollbar{display:none}
   .gdtabs button{flex:none;border:1px solid rgba(255,140,43,.3);background:rgba(255,255,255,.04);
@@ -282,7 +305,7 @@
   .gdmore:active{background:rgba(255,140,43,.14);color:var(--text)}
   .gdempty{font-size:12.5px;color:var(--dim);text-align:center;padding:20px 0}
 /* ===== GD-CSS-END ===== */
-  /* ================= 🚇 出行规划（v0.6.11） ================= */
+  /* ================= 🚇 出行规划（v0.6.13） ================= */
 
   /* ---------- 起终点选择 ---------- */
   .mtplan{display:flex;align-items:flex-end;gap:8px;margin-top:12px}
@@ -480,7 +503,7 @@
 <div class="bg"></div><div class="grid"></div>
 <div class="wrap">
   <header>
-    <div class="brand">今天吃什么 · v0.6.11</div>
+    <div class="brand">今天吃什么 · v0.6.13</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -684,9 +707,14 @@
 <!-- GD-CARD-START -->
   <div class="card" id="cardGuide">
     <h2>🗺️ 长春玩乐总表 <span class="cnt" id="gdCnt"></span></h2>
-    <div class="hint">早市 / 夜市 / 商场 / 景点四栏分开。<b>「怎么去」跟着上面《出行规划》卡的出发站实时算</b>，
-      改起点这里就重排。点一行看详情。数据来自公开网络（2026-09 整理），
-      标 ⚠️ 的是停业/搬迁/存疑，去之前先确认。</div>
+    <div class="hint">早市 / 夜市 / 商场 / 景点四栏分开。<b>下面这个出发站是这一栏专用的</b>，
+      跟上面《出行规划》那张卡互不影响。点一行看详情；标 ⚠️ 的是停业/搬迁/存疑，去之前先确认。</div>
+
+    <div class="gdplan">
+      <span class="lb">从</span>
+      <select id="gdFrom" aria-label="玩乐栏出发站"></select>
+      <button type="button" class="gdsync" id="gdSync" title="用上面《出行规划》的起点">⟳</button>
+    </div>
 
     <div class="gdtabs" id="gdTabs"></div>
     <div class="gdsearch"><input id="gdSearch" type="search" placeholder="搜名字 / 区 / 位置…" /></div>
@@ -2445,7 +2473,7 @@
     g.fillText('今 天 吃 什 么', W / 2, 130);
     g.fillStyle = 'rgba(192,160,138,.9)';
     g.font = '22px ' + F;
-    g.fillText('随机决定器 · v0.6.11', W / 2, 170);
+    g.fillText('随机决定器 · v0.6.13', W / 2, 170);
     // 主菜名
     g.fillStyle = '#fff';
     var size = 74;
@@ -3039,7 +3067,7 @@
   <button data-go="cardBak">📦 备份</button>
 </nav>
 
-<!-- ================= 🚇 出行规划（v0.6.11） ================= -->
+<!-- ================= 🚇 出行规划（v0.6.13） ================= -->
 <div id="mtView">
   <div class="bar">
     <span class="ttl">长春轨道交通线网图</span>
@@ -3379,9 +3407,12 @@
     var to = el('mtTo') ? el('mtTo').value : '';
     lsSet(K_FROM, from); lsSet(K_TO, to);
     paintDots();
+    // ⚠️ 必须清缓存：开了 5 号线开关之后图变了，
+    //    之前的 null / 旧结果会被别的卡片（玩乐总表）继续读到，显示出错的路线
+    EW_CACHE = {};
     var res = mtBoth(graphNow(), from, to);
     renderPlan(res);
-    // 通知别的卡片（🗺️ 玩乐总表）出发站变了，让它们重算自己的「怎么去」
+    // 通知别的卡片（🗺️ 玩乐总表）线路可用性变了，让它们重算
     try { document.dispatchEvent(new CustomEvent('ew-metro-changed')); } catch (e) { }
     return res;
   }
@@ -3411,6 +3442,8 @@
     usable: stationUsable,
     /* 5 号线「按真实日期」开通了没 —— 用来决定还要不要标「（9/28 起）」 */
     l5Open: function () { return mtIsOpen('5'); },
+    /* 让别的卡片能复用这套「按线路分组的下拉框」（含换乘标记和 🚧） */
+    fillStationSelect: function (sel, want) { return fillSelect(sel, want); },
     plan: function (from, to) {
       var key = from + '|' + to;
       if (EW_CACHE[key] !== undefined) return EW_CACHE[key];
@@ -3750,10 +3783,11 @@
 </script>
 <!-- GD-SCRIPT-START -->
 <script>
-/* ---------------- 🗺️ 长春玩乐总表 v0.6.6 ----------------
-   数据：长春吃喝玩乐总表（189 条，早市/夜市/商场/景点）
-   ⚠️ 「怎么去」**不是写死的** —— 跟着出行规划卡里当前的出发站实时算。
-      改了上面的起点，这一栏会跟着重排、重算。
+/* ---------------- 🗺️ 长春玩乐总表 v0.6.12 ----------------
+   数据：长春吃喝玩乐总表（191 条，早市/夜市/商场/景点）
+   ⚠️ 「怎么去」由**这一栏自己的出发站**实时算（跟上面《出行规划》那张卡互不影响）。
+   ⚠️ 算不出来就**什么都不显示 + 出警告**，绝不退回离线写死的字符串
+      —— 那份是按百花园算的，拿它冒充别的起点会显示错路线（踩过这个坑）。
    ---------------------------------------------------------- */
 (function () {
   'use strict';
@@ -3766,6 +3800,8 @@
     '商业综合体': '🛍️ 商场',
     '景点 / 公园': '🌳 景点'
   };
+  var K_FROM = 'ew-guide-from-v1';
+  var HOME = '百花园';
   var PAGE = 15;
 
   var cur = GUIDE.cats[0] || '';
@@ -3775,15 +3811,42 @@
   function esc(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
-  function origin() {
-    var m = window.__ewMetro;
-    return m && m.origin ? m.origin() : '';
-  }
-  /* 实时路线；算不出来返回 null（就用数据里那份离线兜底） */
+  function ls(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+
+  function M() { return window.__ewMetro; }
+  function origin() { var s = el('gdFrom'); return s ? s.value : ''; }
+  /* 实时路线；算不出来返回 null */
   function liveOf(it) {
-    var m = window.__ewMetro;
+    var m = M();
     if (!m || !it.ok) return null;
     return m.plan(origin(), it.m);
+  }
+
+  /* ---------- 出发站下拉框（复用地铁模块那套分组逻辑） ---------- */
+  function fillFrom(want) {
+    var sel = el('gdFrom'), m = M();
+    if (!sel || !m || !m.fillStationSelect) return false;
+    if (m.fillStationSelect(sel, want)) return true;
+    return m.fillStationSelect(sel, HOME);
+  }
+  function initFrom() {
+    var sel = el('gdFrom');
+    if (!sel) return;
+    var m = M();
+    // 没存过就跟着《出行规划》当前起点，再没有就用百花园
+    var want = ls(K_FROM) || (m && m.origin ? m.origin() : '') || HOME;
+    fillFrom(want);
+    sel.addEventListener('change', function () {
+      lsSet(K_FROM, sel.value);
+      renderList();
+    });
+    var sy = el('gdSync');
+    if (sy) sy.addEventListener('click', function () {
+      var o = m && m.origin ? m.origin() : '';
+      if (!o) return;
+      if (fillFrom(o)) { lsSet(K_FROM, o); renderList(); }
+    });
   }
 
   /* ---------- 标签页 ---------- */
@@ -3808,7 +3871,7 @@
     };
   }
 
-  /* ---------- 筛选 + 排序（按当前出发站的时间） ---------- */
+  /* ---------- 筛选 + 排序 ---------- */
   function matched() {
     var out = [];
     GUIDE.items.forEach(function (it) {
@@ -3830,22 +3893,35 @@
     var box = el('gdList'), more = el('gdMore'), cnt = el('gdCnt');
     if (!box) return;
     var list = matched();
+    var hasEngine = !!M();
+    var from = origin();
     if (cnt) cnt.textContent = list.length + ' 个';
+
+    // 出发站算不出来？明说
+    var liveCount = 0, okCount = 0;
+    list.forEach(function (it) { if (it.ok) okCount++; if (it.lv) liveCount++; });
+    var warn = '';
+    if (hasEngine && from && okCount > 0 && liveCount === 0) {
+      warn = '<div class="gdwarn">⚠️ 从「' + esc(from) + '」出发算不出路线 —— ' +
+        '这个站现在可能不在运营线路上（比如 5 号线的站，而 5 号线明天才开通）。' +
+        '换个出发站，或在上面《出行规划》里打开 5 号线开关。</div>';
+    }
+
     if (!list.length) {
-      box.innerHTML = '<div class="gdempty">这栏没有匹配的 🤔</div>';
+      box.innerHTML = warn + '<div class="gdempty">这栏没有匹配的 🤔</div>';
       if (more) more.style.display = 'none';
       return;
     }
     var view = list.slice(0, shown);
-    // 5 号线还没真开通时，用到它的路线才标「（9/28 起）」；真开通了就别再标了
-    var l5ready = !(window.__ewMetro && window.__ewMetro.l5Open && window.__ewMetro.l5Open());
+    var l5pending = !(M() && M().l5Open && M().l5Open());
     var h = '';
     view.forEach(function (it, i) {
       var lv = it.lv;
-      var how = lv ? (lv.text + (lv.used5 && l5ready ? '（9/28 起）' : ''))
-        : (it.h && it.h !== '—' ? it.h : '');
-      var mins = lv ? lv.min : (it.t > 0 ? it.t : 0);
-      var canPlan = !!it.ok && !!window.__ewMetro;
+      // 有引擎就只认实时结果；算不出来就空着，绝不拿离线那份（它是按百花园算的）
+      var how = lv ? (lv.text + (lv.used5 && l5pending ? '（9/28 起）' : ''))
+        : (!hasEngine && it.h && it.h !== '—' ? it.h : '');
+      var mins = lv ? lv.min : (!hasEngine && it.t > 0 ? it.t : 0);
+      var canPlan = !!it.ok && hasEngine;
       h += '<div class="grow" data-i="' + i + '">' +
         '<div class="l1"><span class="nm">' + esc(it.n) + '</span>' +
         (mins > 0 ? '<span class="tm">≈' + mins + '′</span>' : '') +
@@ -3864,7 +3940,7 @@
         '&view=map&callnative=1&src=dsh-eat-what" target="_blank" rel="noopener noreferrer">🗺️ 高德搜</a>' +
         '</div></div></div>';
     });
-    box.innerHTML = h;
+    box.innerHTML = warn + h;
     if (more) {
       var rest = list.length - view.length;
       more.style.display = rest > 0 ? 'block' : 'none';
@@ -3872,11 +3948,9 @@
     }
     var foot = el('gdFoot');
     if (foot) {
-      var o = origin();
-      var n = GUIDE.items.filter(function (x) { return x.ok; }).length;
-      foot.innerHTML = '「怎么去」是按 <b>' + esc(o || '—') + '</b> 出发实时算的 —— ' +
-        '改上面《出行规划》卡里的起点，这里会跟着重算重排。' +
-        '<br>共 <b>' + GUIDE.items.length + '</b> 个地方，其中 <b>' + n + '</b> 个能算地铁时间。' +
+      foot.innerHTML = '「怎么去」按 <b>' + esc(from || '—') + '</b> 出发实时算（这一栏专用，跟上面那张卡互不影响）。' +
+        '<br>共 <b>' + GUIDE.items.length + '</b> 个地方，其中 <b>' + GUIDE.items.filter(function (x) { return x.ok; }).length +
+        '</b> 个能算地铁时间；其余只有公交或未核实。' +
         '<br>标 ⚠️ 的是停业 / 搬迁 / 存疑；夜市那栏很多是<b>季节性</b>的，秋天可能已收摊。';
     }
   }
@@ -3920,9 +3994,14 @@
     });
   }
 
-  // 出行规划那边改了起点/线路 → 重算这一栏
-  document.addEventListener('ew-metro-changed', function () { renderList(); });
+  // 出行规划那边动了（比如开关 5 号线）→ 刷新本站列表的可用性；出发站不受影响
+  document.addEventListener('ew-metro-changed', function () {
+    var sel = el('gdFrom');
+    if (sel && M() && M().fillStationSelect) M().fillStationSelect(sel, sel.value);
+    renderList();
+  });
 
+  initFrom();
   renderTabs();
   renderList();
 })();
