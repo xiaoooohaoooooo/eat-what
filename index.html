@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+  <meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="manifest" href="manifest.json">
@@ -12,7 +13,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="吃什么">
-<title>今天吃什么 v0.8.0</title>
+<title>今天吃什么 v0.8.1</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -236,7 +237,7 @@
   .bakacts button{flex:1;min-width:96px}
 
 /* ===== FB-CSS-START ===== */
-/* 📣 内测反馈卡（v0.8.0）—— 置顶在最上面
+/* 📣 内测反馈卡（v0.8.1）—— 置顶在最上面
    ⚠️ 这个文件里不要写构建标记那一对注释，标记由 build_v070.js 包。 */
 
 .fbbox{
@@ -290,9 +291,37 @@
 
 .fbtip{font-size:11.5px;color:var(--dim);margin-top:8px;min-height:15px;line-height:1.5}
 .fbtip.ok{color:#8fe89b}
+.fbtip.err{color:#ff9a9a}
+
+/* 两个动作按钮并排 */
+.fbacts{display:flex;gap:8px;margin-top:12px}
+.fbacts .fbbtn{flex:1;margin-top:0;padding:10px 8px;font-size:12.5px}
+.fbbtn.primary{border-color:rgba(94,194,106,.6);background:rgba(94,194,106,.16)}
+.fbbtn.primary:active{background:rgba(94,194,106,.3)}
+.fbbtn[disabled]{opacity:.55;cursor:default}
+
+/* 展开说明 */
+.fbmore{margin-top:11px;font-size:12px}
+.fbmore summary{cursor:pointer;color:var(--dim);outline:none;padding:3px 0;
+  list-style:none;user-select:none}
+.fbmore summary::-webkit-details-marker{display:none}
+.fbmore summary::before{content:'▸ ';color:var(--org)}
+.fbmore[open] summary::before{content:'▾ '}
+.fbmore summary:hover{color:var(--text)}
+.fbmorein{margin-top:7px;padding:9px 11px;border-radius:9px;line-height:1.7;
+  background:rgba(20,10,6,.45);border:1px solid rgba(255,140,43,.22);color:var(--dim)}
+.fbmorein b{color:var(--text)}
+.fbmorein code{font-family:ui-monospace,Consolas,monospace;font-size:11px;
+  background:rgba(255,209,102,.12);border-radius:4px;padding:1px 4px;color:var(--gold)}
+
+/* 隐私说明 */
+.fbprivacy{margin-top:10px;padding:8px 10px;border-radius:9px;font-size:11px;line-height:1.65;
+  color:#b39a86;background:rgba(94,169,255,.07);border-left:3px solid rgba(94,169,255,.5)}
+.fbprivacy b{color:var(--text)}
+.fbprivacy code{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;color:var(--dim)}
 /* ===== FB-CSS-END ===== */
 /* ===== WX-CSS-START ===== */
-/* 🌤️ 天气卡 v0.8.0 —— 配色跟随主色（暖橙 #ff8c2b）
+/* 🌤️ 天气卡 v0.8.1 —— 配色跟随主色（暖橙 #ff8c2b）
    ⚠️ 这个文件里**不要**写构建标记那一对注释（START/END）：标记由 build_v070.js 包在外面，
       文件里再写一份会让每跑一次构建就多留一个尾巴（踩过这个坑）。 */
 #cardWx .wxloc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
@@ -359,7 +388,7 @@
 #cardWx .wxaqi .d{width:8px;height:8px;border-radius:50%;flex:none}
 /* ===== WX-CSS-END ===== */
 /* ===== GD-CSS-START ===== */
-  /* ================= 🗺️ 长春玩乐总表（v0.8.0） ================= */
+  /* ================= 🗺️ 长春玩乐总表（v0.8.1） ================= */
 
   /* ---------- 这一栏专用的出发站 ---------- */
   .gdplan{display:flex;align-items:center;gap:8px;margin-top:11px;padding:9px 11px;border-radius:12px;
@@ -429,7 +458,7 @@
   .gdempty{font-size:12.5px;color:var(--dim);text-align:center;padding:20px 0}
 /* ===== GD-CSS-END ===== */
 /* ===== GD2-CSS-START ===== */
-/* 🗺️ 玩乐卡 v2 增量样式（v0.8.0）：天气条 / 筛选 / 时间状态 / 距离 / 去过 / 复制
+/* 🗺️ 玩乐卡 v2 增量样式（v0.8.1）：天气条 / 筛选 / 时间状态 / 距离 / 去过 / 复制
    ⚠️ 这个文件里**不要**写构建标记那一对注释：由构建器包，文件里再写会重复堆叠。 */
 
 /* 顶部天气条 */
@@ -493,7 +522,7 @@
 .grow .l1{flex-wrap:wrap;gap:5px}
 .grow .l1 .nm{flex:1;min-width:110px}
 /* ===== GD2-CSS-END ===== */
-  /* ================= 🚇 出行规划（v0.8.0） ================= */
+  /* ================= 🚇 出行规划（v0.8.1） ================= */
 
   /* ---------- 起终点选择 ---------- */
   .mtplan{display:flex;align-items:flex-end;gap:8px;margin-top:12px}
@@ -695,20 +724,14 @@
   <div class="fbhead">
     <span class="fbtitle">📣 内测反馈</span>
     <span class="fbtag" id="fbTag">测试版</span>
-    <span class="fbmini">微信 xiaoooohaoooooo</span>
+    <span class="fbmini" id="fbMini"></span>
     <button type="button" class="fbtoggle" id="fbToggle">收起</button>
   </div>
 
   <div class="fbbody" id="fbBody">
-    <div class="fbwxrow">
-      <span class="lb">微信</span>
-      <code class="fbwx" id="fbWx">xiaoooohaoooooo</code>
-      <button type="button" class="fbbtn" id="fbCopyWx">📋 复制</button>
-    </div>
-
     <div class="fbhint">
-      这是<b>小范围内测版</b>，你是我专门找来试的。用着别扭 / 发现 bug / 想加点什么，
-      直接微信戳我就行 —— <b>骂也行，别客气</b>。
+      这是我攒的《今天吃什么》，你是被专门找来试的。
+      用着别扭 / 发现 bug / 想加点什么，随便说 —— <b>骂也行，别客气</b>。
     </div>
 
     <div class="fblabel">先选个类型（不选也行）</div>
@@ -721,13 +744,23 @@
       <button type="button" data-t="🌟 挺好用">🌟 挺好用</button>
     </div>
 
-    <button type="button" class="fbbtn wide" id="fbTpl">📋 复制反馈模板（自动带上版本和机型）</button>
+    <div class="fbacts">
+      <button type="button" class="fbbtn" id="fbTpl">📋 复制反馈内容</button>
+      <button type="button" class="fbbtn primary" id="fbSend">📮 匿名发给我</button>
+    </div>
     <div class="fbtip" id="fbTip"></div>
+
+    <details class="fbmore" id="fbMore">
+      <summary>这俩按钮到底干啥的？点开看</summary>
+      <div class="fbmorein" id="fbMoreIn"></div>
+    </details>
+
+    <div class="fbprivacy" id="fbPrivacy"></div>
   </div>
 </div>
 <!-- FB-CARD-END -->
   <header>
-    <div class="brand">今天吃什么 · v0.8.0</div>
+    <div class="brand">今天吃什么 · v0.8.1</div>
     <h1>随机决定器</h1>
     <div class="sub" id="subline">加载中…</div>
   </header>
@@ -3086,7 +3119,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     g.fillText('今 天 吃 什 么', W / 2, 130);
     g.fillStyle = 'rgba(192,160,138,.9)';
     g.font = '22px ' + F;
-    g.fillText('随机决定器 · v0.8.0', W / 2, 170);
+    g.fillText('随机决定器 · v0.8.1', W / 2, 170);
     // 主菜名
     g.fillStyle = '#fff';
     var size = 74;
@@ -3143,7 +3176,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
       String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'), W / 2, H - 150);
     g.fillStyle = 'rgba(255,140,43,.9)';
     g.font = 'bold 24px ' + F;
-    g.fillText('xiaoooohaoooooo.github.io/eat-what', W / 2, H - 100);
+    g.fillText('今天吃什么 · 内测版', W / 2, H - 100);
 
     var done = function (blob) {
       var url = URL.createObjectURL(blob);
@@ -3686,7 +3719,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   <button data-go="cardBak">📦 备份</button>
 </nav>
 
-<!-- ================= 🚇 出行规划（v0.8.0） ================= -->
+<!-- ================= 🚇 出行规划（v0.8.1） ================= -->
 <div id="mtView">
   <div class="bar">
     <span class="ttl">长春轨道交通线网图</span>
@@ -4402,13 +4435,13 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 </script>
 <!-- GD-SCRIPT-START -->
 <script>
-/* ---------------- 🗺️ 长春玩乐总表 v0.8.0 ----------------
+/* ---------------- 🗺️ 长春玩乐总表 v0.8.1 ----------------
    数据：长春吃喝玩乐总表（191 条，早市/夜市/商场/景点）
    ⚠️ 「怎么去」由**这一栏自己的出发站**实时算（跟上面《出行规划》那张卡互不影响）。
    ⚠️ 算不出来就**什么都不显示 + 出警告**，绝不退回离线写死的字符串
       —— 那份是按百花园算的，拿它冒充别的起点会显示错路线（踩过这个坑）。
 
-   v0.8.0 新增：
+   v0.8.1 新增：
      · ⏰ 营业时段状态 —— 「正热闹 / 快收摊了！还剩 30 分钟 / 已收摊」
         时段来自 it.tm：exact 是原文写了钟点的，rough 是「清晨/傍晚起」这种推算的（一律带「约」）
      · 📍 直线距离 —— 出发站到目标**最近地铁站**的直线距离（不是到门口，所以标「直线」）
@@ -4952,7 +4985,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 <!-- GD-SCRIPT-END -->
 <!-- WX-SCRIPT-START -->
 <script>
-/* ---------------- 🌤️ 实时天气 v0.8.0 ----------------
+/* ---------------- 🌤️ 实时天气 v0.8.1 ----------------
    数据源：Open-Meteo（https://open-meteo.com）
      · 免费、不用注册、不用 key、CORS 全开（实测 allow-origin: *）
      · 响应只有 ~4KB
@@ -5347,35 +5380,57 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 <!-- WX-SCRIPT-END -->
 <!-- FB-SCRIPT-START -->
 <script>
-/* ---------------- 📣 内测反馈卡 v0.8.0 ----------------
+/* ---------------- 📣 内测反馈卡 v0.8.1 ----------------
    置顶在最上面，小范围内测用。
-     · 微信号一键复制（这么长一串，手打必错）
-     · 「复制反馈模板」自动带上版本号、机型、浏览器、屏幕尺寸
-       —— 免得测试的人只说一句「不好用」，我还得回头问半天
-     · 可收起（状态记在本机），收起后标题栏仍露着微信号
-   ---------------------------------------------------------- */
+
+   ⚠️ 隐私设计（v0.8.1 重做）：
+     旧版把微信号**明文写在页面上**，而网页是公开的（GitHub Pages 没有访问控制），
+     谁 view-source 都能拿到，搜索引擎还可能收录。这不是「小范围」该有的样子。
+     现在：
+       · 页面**完全不显示任何联系方式**（CFG.wx 留空即隐藏）
+       · 主通道是「📮 匿名发送」—— 通过公共中转 ntfy.sh 发到一个随机频道，
+         提交的人不用加好友、不用留手机号/邮箱/任何东西
+       · 代价如实写在界面上：频道名在网页代码里，谁知道谁就能读到里面发过的东西
+     ---------------------------------------------------------- */
 (function () {
   'use strict';
   var el = function (id) { return document.getElementById(id); };
-  var WX = 'xiaoooohaoooooo';
+
+  /* ============ 配置 ============ */
+  var CFG = {
+    /* 联系方式：**留空 = 页面完全不显示**（默认）。
+       想直接在页面上印联系方式，就在这儿填你的号。
+       ⚠️ 但要想清楚：这页是公开的，填进去等于发给全世界，还会被搜索引擎收。
+          —— 所以这里**故意不写具体号码**，连注释里都不写（注释也会进 HTML 源码）。 */
+    wx: '',
+
+    /* 匿名通道的频道名（ntfy.sh）。换一个字符串 = 旧链接立刻失效，可用来轮换。 */
+    ntfy: 'eatwhat-fb-krnueejqg25kii',
+
+    /* 「匿名发送」开关 */
+    ntfyOn: true,
+
+    /* 想在页面上告诉别人怎么找你（留空则不显示这行） */
+    contact: '群里 @ 我一下就行'
+  };
+  /* ================================ */
+
   var K_FOLD = 'ew-fb-fold-v1';
+  var pick = '';
 
   function ls(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
 
-  var pick = '';      // 选中的反馈类型
-
-  /* ---------- 从 UA 里认机型和浏览器 ---------- */
+  /* ---------- 认机型和浏览器 ---------- */
   function device() {
     var ua = navigator.userAgent || '';
     var os = '未知系统';
-    if (/Android/i.test(ua)) {
-      var m = ua.match(/Android\s+([\d.]+)/);
-      os = 'Android' + (m ? ' ' + m[1] : '');
-    } else if (/iPhone|iPad|iPod/i.test(ua)) {
+    if (/Android/i.test(ua)) { var m = ua.match(/Android\s+([\d.]+)/); os = 'Android' + (m ? ' ' + m[1] : ''); }
+    else if (/iPhone|iPad|iPod/i.test(ua)) {
       var v = ua.match(/OS\s+(\d+)[._](\d+)/);
       os = (/iPad/i.test(ua) ? 'iPadOS' : 'iOS') + (v ? ' ' + v[1] + '.' + v[2] : '');
-    } else if (/Windows/i.test(ua)) os = 'Windows';
+    }
+    else if (/Windows/i.test(ua)) os = 'Windows';
     else if (/Mac OS X/i.test(ua)) os = 'macOS';
     else if (/Linux/i.test(ua)) os = 'Linux';
 
@@ -5389,7 +5444,6 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     else if (/Chrome\//i.test(ua)) br = 'Chrome ' + ((ua.match(/Chrome\/(\d+)/) || [])[1] || '');
     else if (/Safari\//i.test(ua) && /Version\//i.test(ua)) br = 'Safari ' + ((ua.match(/Version\/(\d+)/) || [])[1] || '');
     else if (/Firefox\//i.test(ua)) br = 'Firefox ' + ((ua.match(/Firefox\/(\d+)/) || [])[1] || '');
-
     return os + ' · ' + br;
   }
 
@@ -5435,27 +5489,23 @@ FOODS = FOODS.concat(FOODS_EXTRA);
       var old = btn.textContent;
       btn.classList.add('done');
       btn.textContent = '✅ 复制好了';
-      if (tip) { tip.textContent = '已复制，粘到微信发我就行。'; tip.className = 'fbtip ok'; }
+      if (tip) { tip.textContent = '内容已复制 —— 粘到微信/QQ 发我就行。'; tip.className = 'fbtip ok'; }
       setTimeout(function () {
-        btn.classList.remove('done');
-        btn.textContent = old;
+        btn.classList.remove('done'); btn.textContent = old;
         if (tip) { tip.textContent = ''; tip.className = 'fbtip'; }
-      }, 2200);
+      }, 2400);
     };
     var fb = function () {
       try {
         var ta = document.createElement('textarea');
         ta.value = text;
         ta.style.position = 'fixed'; ta.style.top = '-1000px'; ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        ta.setSelectionRange(0, text.length);
+        document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, text.length);
         document.execCommand('copy');
         document.body.removeChild(ta);
         done();
       } catch (e) {
-        if (tip) { tip.textContent = '复制失败，手动按住选中吧。'; tip.className = 'fbtip'; }
-        // 最后兜底：直接弹出来让用户手抄
+        if (tip) { tip.textContent = '复制失败了，手动按住选中吧。'; tip.className = 'fbtip err'; }
         window.prompt('复制失败，手动复制这段：', text);
       }
     };
@@ -5464,16 +5514,75 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     } else fb();
   }
 
-  /* ---------- 初始化 ---------- */
+  /* ---------- 匿名发送（ntfy.sh） ---------- */
+  function send(text, btn, tip) {
+    if (typeof fetch !== 'function') {
+      if (tip) { tip.textContent = '这个浏览器发不了，用「复制反馈内容」吧。'; tip.className = 'fbtip err'; }
+      return;
+    }
+    if (navigator.onLine === false) {
+      if (tip) { tip.textContent = '现在没网 —— 用「复制反馈内容」，等有网再发。'; tip.className = 'fbtip err'; }
+      return;
+    }
+    var old = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '📮 发送中…';
+    if (tip) { tip.textContent = ''; tip.className = 'fbtip'; }
+
+    var ctl = ('AbortController' in window) ? new AbortController() : null;
+    var timer = ctl ? setTimeout(function () { ctl.abort(); }, 12000) : null;
+
+    fetch('https://ntfy.sh/' + CFG.ntfy, {
+      method: 'POST',
+      signal: ctl ? ctl.signal : undefined,
+      headers: {
+        // ⚠️ HTTP 头只放 ASCII —— 中文塞进头里属于编码未定义行为，ntfy 也不认。
+        //    中文内容一律走 body。
+        'Title': 'EatWhat feedback',
+        'Tags': 'incoming_envelope',
+        'Priority': 'default'
+      },
+      body: text
+    }).then(function (r) {
+      if (timer) clearTimeout(timer);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    }).then(function () {
+      btn.disabled = false;
+      btn.classList.add('done');
+      btn.textContent = '✅ 已匿名发出';
+      if (tip) { tip.textContent = '收到了，谢谢！想补细节的话，再发一条或者直接找我。'; tip.className = 'fbtip ok'; }
+      setTimeout(function () {
+        btn.classList.remove('done'); btn.textContent = old;
+        if (tip) { tip.textContent = ''; tip.className = 'fbtip'; }
+      }, 3200);
+    }).catch(function (e) {
+      if (timer) clearTimeout(timer);
+      btn.disabled = false;
+      btn.textContent = old;
+      var why = (e && e.name === 'AbortError') ? '超时了' : ('发不出去（' + ((e && e.message) || '网络问题') + '）');
+      if (tip) {
+        tip.innerHTML = why + ' —— 用「📋 复制反馈内容」也一样，粘给我就行。';
+        tip.className = 'fbtip err';
+      }
+    });
+  }
+
+  /* ---------- 渲染 ---------- */
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   function init() {
     var box = el('fbBox');
     if (!box) return;
 
-    // 版本标签跟着 App 版本走
     var tag = el('fbTag');
     if (tag) tag.textContent = appVer() + ' 测试版';
 
-    // 折叠状态：默认展开（内测期间就是要让人看见），收起过就记住
+    /* 收起状态：默认展开（内测期间就是要让人看见），收起过就记住 */
     if (ls(K_FOLD) === '1') box.classList.add('fold');
     var tg = el('fbToggle');
     var syncTg = function () { tg.textContent = box.classList.contains('fold') ? '展开' : '收起'; };
@@ -5484,14 +5593,55 @@ FOODS = FOODS.concat(FOODS_EXTRA);
       syncTg();
     });
 
-    // 微信号
-    var wxEl = el('fbWx');
-    if (wxEl) wxEl.textContent = WX;
-    var cw = el('fbCopyWx');
-    var tip = el('fbTip');
-    if (cw) cw.addEventListener('click', function () { copy(WX, cw, tip); });
+    /* 收起时标题栏露的那行字：不再露微信号，改成一句话提示 */
+    var mini = el('fbMini');
+    if (mini) mini.textContent = CFG.ntfyOn ? '可以匿名发我' : (CFG.contact ? '' : '有问题随时说');
 
-    // 类型选择（单选）
+    /* 匿名发送按钮：关掉就把整块去掉 */
+    var snd = el('fbSend');
+    if (snd) {
+      if (!CFG.ntfyOn) {
+        snd.parentNode.removeChild(snd);
+      } else if (CFG.wx) {
+        // 页面已经印了微信号，匿名就没那么必要了，降权
+        snd.classList.remove('primary');
+      }
+    }
+
+    var tip = el('fbTip');
+
+    /* 说明区（默认收起） */
+    var mi = el('fbMoreIn');
+    if (mi) {
+      var h = '';
+      h += '<b>📋 复制反馈内容</b> —— 自动把版本号、机型、屏幕尺寸填好，' +
+        '你粘到微信 / QQ 发我。适合想细说、想追问的情况。<br><br>';
+      if (CFG.ntfyOn) {
+        h += '<b>📮 匿名发给我</b> —— 点一下就直接发走，' +
+          '<b>不用加好友、不用留名字 / 电话 / 邮箱</b>，我也收不到你是谁。<br><br>';
+        h += '⚠️ <b>代价说清楚</b>：它走的是公共中转服务 <code>ntfy.sh</code>，' +
+          '频道名就写在网页代码里 —— <b>谁能翻到这段代码，谁就能读到里面发过的内容</b>。' +
+          '所以<b>别在里面写真名、电话、学号这类东西</b>。要私聊就直接找我。';
+      } else {
+        h += '（匿名通道当前关着，只能复制。）';
+      }
+      mi.innerHTML = h;
+    }
+
+    /* 隐私说明 */
+    var pv = el('fbPrivacy');
+    if (pv) {
+      var p = [];
+      if (!CFG.wx) {
+        p.push('🔒 <b>这页不显示任何人的联系方式</b>（网页是公开的，印上去等于发给全世界）。');
+      }
+      if (CFG.contact) p.push('要找我：<b>' + esc(CFG.contact) + '</b>');
+      if (CFG.ntfyOn && CFG.wx) p.push('联系不上就用「匿名发送」。');
+      pv.innerHTML = p.join('　');
+      if (!p.length) pv.style.display = 'none';
+    }
+
+    /* 类型选择（单选） */
     var types = el('fbTypes');
     if (types) {
       types.addEventListener('click', function (e) {
@@ -5503,25 +5653,23 @@ FOODS = FOODS.concat(FOODS_EXTRA);
         for (var i = 0; i < bs.length; i++) {
           bs[i].classList.toggle('on', bs[i].getAttribute('data-t') === pick);
         }
-        var tp = el('fbTpl');
-        if (tp && !tp.classList.contains('done')) {
-          tp.textContent = pick
-            ? '📋 复制反馈模板（' + pick + '）'
-            : '📋 复制反馈模板（自动带上版本和机型）';
-        }
       });
     }
 
-    // 模板
     var tpl = el('fbTpl');
     if (tpl) tpl.addEventListener('click', function () { copy(template(), tpl, tip); });
+    if (snd) snd.addEventListener('click', function () { send(template(), snd, tip); });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 
   /* 给测试用 */
-  window.__ewFb = { template: template, device: device, ver: appVer, wx: WX };
+  window.__ewFb = {
+    template: template, device: device, ver: appVer,
+    cfg: function () { return { wx: CFG.wx, ntfy: CFG.ntfy, ntfyOn: CFG.ntfyOn, contact: CFG.contact }; },
+    topic: function () { return CFG.ntfy; }
+  };
 })();
 </script>
 <!-- FB-SCRIPT-END -->
