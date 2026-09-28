@@ -13,7 +13,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="吃什么">
-<title>今天吃什么 v0.9.1</title>
+<title>今天吃什么 v0.9.2</title>
 <style>
   :root{
     --bg:#140a06; --bg2:#2a1408; --card:rgba(58,28,12,.62);
@@ -237,7 +237,7 @@
   .bakacts button{flex:1;min-width:96px}
 
 /* ===== FB-CSS-START ===== */
-/* 📣 内测反馈卡（v0.9.1）—— 置顶在最上面
+/* 📣 内测反馈卡（v0.9.2）—— 置顶在最上面
    ⚠️ 这个文件里不要写构建标记那一对注释，标记由 build_v070.js 包。 */
 
 .fbbox{
@@ -333,7 +333,7 @@
 .fbprivacy code{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;color:var(--dim)}
 /* ===== FB-CSS-END ===== */
 /* ===== WX-CSS-START ===== */
-/* 🌤️ 天气卡 v0.9.1 —— 配色跟随主色（暖橙 #ff8c2b）
+/* 🌤️ 天气卡 v0.9.2 —— 配色跟随主色（暖橙 #ff8c2b）
    ⚠️ 这个文件里**不要**写构建标记那一对注释（START/END）：标记由 build_v070.js 包在外面，
       文件里再写一份会让每跑一次构建就多留一个尾巴（踩过这个坑）。 */
 #cardWx .wxloc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
@@ -400,7 +400,7 @@
 #cardWx .wxaqi .d{width:8px;height:8px;border-radius:50%;flex:none}
 /* ===== WX-CSS-END ===== */
 /* ===== GD-CSS-START ===== */
-  /* ================= 🗺️ 长春玩乐总表（v0.9.1） ================= */
+  /* ================= 🗺️ 长春玩乐总表（v0.9.2） ================= */
 
   /* ---------- 这一栏专用的出发站 ---------- */
   .gdplan{display:flex;align-items:center;gap:8px;margin-top:11px;padding:9px 11px;border-radius:12px;
@@ -470,7 +470,7 @@
   .gdempty{font-size:12.5px;color:var(--dim);text-align:center;padding:20px 0}
 /* ===== GD-CSS-END ===== */
 /* ===== GD2-CSS-START ===== */
-/* 🗺️ 玩乐卡 v2 增量样式（v0.9.1）：天气条 / 筛选 / 时间状态 / 距离 / 去过 / 复制
+/* 🗺️ 玩乐卡 v2 增量样式（v0.9.2）：天气条 / 筛选 / 时间状态 / 距离 / 去过 / 复制
    ⚠️ 这个文件里**不要**写构建标记那一对注释：由构建器包，文件里再写会重复堆叠。 */
 
 /* 顶部天气条 */
@@ -534,7 +534,7 @@
 .grow .l1{flex-wrap:wrap;gap:5px}
 .grow .l1 .nm{flex:1;min-width:110px}
 /* ===== GD2-CSS-END ===== */
-  /* ================= 🚇 出行规划（v0.9.1） ================= */
+  /* ================= 🚇 出行规划（v0.9.2） ================= */
 
   /* ---------- 起终点选择 ---------- */
   .mtplan{display:flex;align-items:flex-end;gap:8px;margin-top:12px}
@@ -776,7 +776,7 @@
 </div>
 <!-- FB-CARD-END -->
   <header>
-    <div class="brand">今天吃什么 · v0.9.1</div>
+    <div class="brand">今天吃什么 · v0.9.2</div>
 <!-- MADE-START -->
     <div class="madeby">made by <b>xiao4hao6</b><span class="sep">/</span>deepseek harness<span class="nc">严禁用作商业途径</span></div>
     <style>
@@ -2509,16 +2509,30 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   var RATEOV_KEY = 'eat-what-rateov-v1';
   var CURFEW_KEY = 'eat-what-curfew-v1';
   var CURFEW_DEF = { h: 21, m: 30 };        // 默认封寝时间
+  var OPEN_DEF = { h: 6, m: 0 };            // 默认开寝时间（早上楼门几点开）
   var curfew = { h: 21, m: 30 };            // 当前封寝时间（本机可改）
+  var openT = { h: 6, m: 0 };               // 当前开寝时间（本机可改）  /* OPENPATCH-START */
+  /* 封寝/开寝双边界（v0.9.2）。配套改动见 loadCurfew / saveCurfew / curfewInfo / renderCurfew / editCurfew */
   function pad2(x) { return (x < 10 ? '0' : '') + x; }
   function loadCurfew() {
     try {
       var d = JSON.parse(localStorage.getItem(CURFEW_KEY) || 'null');
       if (d && d.h >= 0 && d.h <= 23 && d.m >= 0 && d.m <= 59) curfew = { h: d.h, m: d.m };
       else curfew = { h: CURFEW_DEF.h, m: CURFEW_DEF.m };
-    } catch (e) { curfew = { h: CURFEW_DEF.h, m: CURFEW_DEF.m }; }
+      /* 老版本只存了 h/m，没有开寝时间 —— 缺了就用默认 06:00，不报错 */
+      if (d && d.oh >= 0 && d.oh <= 23 && d.om >= 0 && d.om <= 59) openT = { h: d.oh, m: d.om };
+      else openT = { h: OPEN_DEF.h, m: OPEN_DEF.m };
+    } catch (e) {
+      curfew = { h: CURFEW_DEF.h, m: CURFEW_DEF.m };
+      openT = { h: OPEN_DEF.h, m: OPEN_DEF.m };
+    }
   }
-  function saveCurfew() { try { localStorage.setItem(CURFEW_KEY, JSON.stringify(curfew)); } catch (e) {} }
+  function saveCurfew() {
+    try {
+      localStorage.setItem(CURFEW_KEY, JSON.stringify(
+        { h: curfew.h, m: curfew.m, oh: openT.h, om: openT.m }));
+    } catch (e) { }
+  }
   // 点封寝条就能改（留空 = 恢复默认）
   function editCurfew() {
     var cur = pad2(curfew.h) + ':' + pad2(curfew.m);
@@ -2535,9 +2549,23 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     if (!mm2) { toast('❌ 格式要像 21:30'); return false; }
     var hh = parseInt(mm2[1], 10), mi = parseInt(mm2[2], 10);
     if (hh > 23 || mi > 59) { toast('❌ 时间不合法（小时 0-23 / 分钟 0-59）'); return false; }
+    /* v0.9.2：接着问开寝时间。留空 = 保持现在这个 */
+    var cur2 = pad2(openT.h) + ':' + pad2(openT.m);
+    var v2 = prompt('你们几点开寝？（早上楼门开的时间，例 06:00）\n留空 = 保持 ' + cur2, cur2);
+    var oh = openT.h, om = openT.m;
+    if (v2 !== null) {
+      v2 = String(v2).trim().replace('：', ':');
+      if (v2 !== '') {
+        var m3 = v2.match(/^(\d{1,2}):(\d{1,2})$/);
+        if (!m3) { toast('❌ 开寝时间格式要像 06:00'); return false; }
+        oh = parseInt(m3[1], 10); om = parseInt(m3[2], 10);
+        if (oh > 23 || om > 59) { toast('❌ 开寝时间不合法'); return false; }
+      }
+    }
     curfew = { h: hh, m: mi };
-    saveCurfew(); renderCurfew();
-    toast('⏰ 封寝时间已设为 ' + pad2(hh) + ':' + pad2(mi) + '（只存你本机）');
+    openT = { h: oh, m: om };
+    saveCurfew(); renderCurfew(); refresh();
+    toast('⏰ 封寝 ' + pad2(hh) + ':' + pad2(mi) + ' · 开寝 ' + pad2(oh) + ':' + pad2(om) + '（只存你本机）');
     return true;
   }
   var el = function (id) { return document.getElementById(id); };
@@ -2951,15 +2979,28 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   // ---------- 封寝倒计时 ----------
   function curfewInfo() {
     var now = new Date();
-    var end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), curfew.h, curfew.m, 0, 0);
-    var open = now.getTime() < end.getTime();
-    var mins = Math.floor(Math.abs(end.getTime() - now.getTime()) / 60000);
-    return { open: open, mins: mins };
+    var cur = now.getHours() * 60 + now.getMinutes();
+    var closeM = curfew.h * 60 + curfew.m;
+    var openM = openT.h * 60 + openT.m;
+    var open, mins, target;
+    if (openM < closeM) {
+      /* 常规作息：早上 openM 开、晚上 closeM 关 */
+      open = cur >= openM && cur < closeM;
+      if (open) { mins = closeM - cur; target = 'close'; }
+      else if (cur < openM) { mins = openM - cur; target = 'open'; }  /* 凌晨，门还关着 */
+      else { mins = 1440 - cur + openM; target = 'open'; }            /* 刚封寝，等明早 */
+    } else {
+      /* 反过来的作息（开寝比封寝晚 = 跨夜开着），少见但别崩 */
+      open = cur >= openM || cur < closeM;
+      if (open) { mins = cur >= openM ? (1440 - cur + closeM) : (closeM - cur); target = 'close'; }
+      else { mins = openM - cur; target = 'open'; }
+    }
+    return { open: open, mins: mins, target: target, cur: cur, closeM: closeM, openM: openM };
   }
   function renderCurfew() {
     var box = el('curfew'); if (!box) return;
     box.style.cursor = 'pointer';
-    box.title = '点这里改封寝时间（只存你本机）';
+    box.title = '点这里改封寝 / 开寝时间（只存你本机）';
     box.onclick = function () { editCurfew(); };
     var c = curfewInfo();
     if (c.open) {
@@ -2970,9 +3011,21 @@ FOODS = FOODS.concat(FOODS_EXTRA);
       else { box.className = 'curfew calm'; txt += ' · 慢慢挑'; }
       box.textContent = txt;
     } else {
-      var h2 = Math.floor(c.mins / 60), m2 = c.mins % 60;
       box.className = 'curfew warn';
-      box.textContent = '🚪 已经封寝 ' + (h2 ? h2 + ' 小时 ' : '') + m2 + ' 分钟了 · 校外那些去不了 😭';
+      var OT = pad2(openT.h) + ':' + pad2(openT.m);
+      var h2, m2;
+      if (c.cur < c.openM) {
+        /* 凌晨：门还关着，数到早上开寝 */
+        h2 = Math.floor(c.mins / 60); m2 = c.mins % 60;
+        box.textContent = '🌅 距 ' + OT + ' 开寝还有 ' + (h2 ? h2 + ' 小时 ' : '') + m2 +
+          ' 分钟 · 现在只能吃楼里的';
+      } else {
+        /* 当晚刚封寝：说封了多久 + 明早几点开 */
+        var since = c.cur - c.closeM;
+        h2 = Math.floor(since / 60); m2 = since % 60;
+        box.textContent = '🚪 已经封寝 ' + (h2 ? h2 + ' 小时 ' : '') + m2 +
+          ' 分钟了 · 校外那些去不了 · 明早 ' + OT + ' 开寝 😭';
+      }
     }
   }
 
@@ -3165,7 +3218,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     g.fillText('今 天 吃 什 么', W / 2, 130);
     g.fillStyle = 'rgba(192,160,138,.9)';
     g.font = '22px ' + F;
-    g.fillText('随机决定器 · v0.9.1', W / 2, 170);
+    g.fillText('随机决定器 · v0.9.2', W / 2, 170);
     // 主菜名
     g.fillStyle = '#fff';
     var size = 74;
@@ -3765,7 +3818,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   <button data-go="cardBak">📦 备份</button>
 </nav>
 
-<!-- ================= 🚇 出行规划（v0.9.1） ================= -->
+<!-- ================= 🚇 出行规划（v0.9.2） ================= -->
 <div id="mtView">
   <div class="bar">
     <span class="ttl">长春轨道交通线网图</span>
@@ -3946,7 +3999,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
   function ls(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
   /* 5 号线 2026-09-28 通车。mtIsOpen() 拿 MT_TODAY（运行时算的今天）跟线路的
-     open 日期比，到日子自动放行 —— 所以 v0.9.1 把「算上 5 号线」那个手动开关删了。
+     open 日期比，到日子自动放行 —— 所以 v0.9.2 把「算上 5 号线」那个手动开关删了。
      （老用户 localStorage 里可能还留着 eat-what-metro-l5-v1，不影响，不再读它。） */
   function graphNow() {
     var on = {};
@@ -4167,7 +4220,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     var t0 = ls(K_TO) || '东岭南街';
     if (!fillSelect(selTo, t0)) fillSelect(selTo, '欧亚卖场');
 
-    /* v0.9.1：这里原来有个「算上 5 号线」的手动开关，5 号线通车后删掉了 */
+    /* v0.9.2：这里原来有个「算上 5 号线」的手动开关，5 号线通车后删掉了 */
 
     var sw = el('mtSwap');
     if (sw) sw.addEventListener('click', function () {
@@ -4464,13 +4517,13 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 </script>
 <!-- GD-SCRIPT-START -->
 <script>
-/* ---------------- 🗺️ 长春玩乐总表 v0.9.1 ----------------
+/* ---------------- 🗺️ 长春玩乐总表 v0.9.2 ----------------
    数据：长春吃喝玩乐总表（191 条，早市/夜市/商场/景点）
    ⚠️ 「怎么去」由**这一栏自己的出发站**实时算（跟上面《出行规划》那张卡互不影响）。
    ⚠️ 算不出来就**什么都不显示 + 出警告**，绝不退回离线写死的字符串
       —— 那份是按百花园算的，拿它冒充别的起点会显示错路线（踩过这个坑）。
 
-   v0.9.1 新增：
+   v0.9.2 新增：
      · ⏰ 营业时段状态 —— 「正热闹 / 快收摊了！还剩 30 分钟 / 已收摊」
         时段来自 it.tm：exact 是原文写了钟点的，rough 是「清晨/傍晚起」这种推算的（一律带「约」）
      · 📍 直线距离 —— 出发站到目标**最近地铁站**的直线距离（不是到门口，所以标「直线」）
@@ -4764,7 +4817,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
     }
     var view = list.slice(0, shown);
     lastView = view;
-    /* v0.9.1：5 号线 2026-09-28 已通车，原来那个「（9/28 起）」后缀的逻辑删了
+    /* v0.9.2：5 号线 2026-09-28 已通车，原来那个「（9/28 起）」后缀的逻辑删了
        —— 它靠「5 号线还没开」才成立，现在永远不会触发，留着只会让人误会。 */
     var h = '';
     view.forEach(function (it, i) {
@@ -5015,7 +5068,7 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 <!-- GD-SCRIPT-END -->
 <!-- WX-SCRIPT-START -->
 <script>
-/* ---------------- 🌤️ 实时天气 v0.9.1 ----------------
+/* ---------------- 🌤️ 实时天气 v0.9.2 ----------------
    数据源：Open-Meteo（https://open-meteo.com）
      · 免费、不用注册、不用 key、CORS 全开（实测 allow-origin: *）
      · 响应只有 ~4KB
@@ -5410,10 +5463,10 @@ FOODS = FOODS.concat(FOODS_EXTRA);
 <!-- WX-SCRIPT-END -->
 <!-- FB-SCRIPT-START -->
 <script>
-/* ---------------- 📣 内测反馈卡 v0.9.1 ----------------
+/* ---------------- 📣 内测反馈卡 v0.9.2 ----------------
    置顶在最上面，小范围内测用。
 
-   ⚠️ 隐私设计（v0.9.1 重做）：
+   ⚠️ 隐私设计（v0.9.2 重做）：
      旧版把微信号**明文写在页面上**，而网页是公开的（GitHub Pages 没有访问控制），
      谁 view-source 都能拿到，搜索引擎还可能收录。这不是「小范围」该有的样子。
      现在：
